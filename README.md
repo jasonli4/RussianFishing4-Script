@@ -8,7 +8,7 @@
   </p>
 
   <p align="center">
-      <img src="readme.png" style="width: 729px;" />
+      <img src="readme.png" style="" />
   </p>
 
 
