@@ -12,7 +12,7 @@
   "stamina_btn": 4,
   "hunger_btn": 5,
   "cast_line_meters": 0,
-  "max_cast_line_meters": 120,
+  "max_cast_line_meters": 520,
   "is_cut_fish": false,
   "is_cut_low_quality_fish": true,
   "fish_block_types1": 2,
