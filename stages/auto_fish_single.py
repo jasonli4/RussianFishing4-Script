@@ -1,11 +1,13 @@
 from collections import deque
+import re
 import random
 import time
-from stages.check_assembly import check_assembly
+import config
+import pyperclip
+import utils
 from utils import sleep_time, start_daemon_thread
 from ocr_global import ocr
-import pyperclip
-import config
+from stages.check_assembly import check_assembly
 from stages.adjust_reel_settings import adjust_reel_friction, adjust_reel_settings,adjust_reel_speed
 from stages.check_fishnet_status import check_fishnet_status
 from stages.check_player_vitals import check_player_vitals
@@ -13,9 +15,7 @@ from stages.cut_fish import cut_fish
 from stages.move_to_bow import move_to_bow
 from stages.return_destination import return_destination
 from stages.set_friction_from_slider import set_friction_from_slider
-import utils
 from logger import logger  # 确保你的 logger 已 setup
-import re
 
 #打状态
 def get_fish_status():

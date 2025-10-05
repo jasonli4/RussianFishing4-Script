@@ -1,11 +1,9 @@
 import tkinter as tk
-from tkinter import messagebox
-import time
 import random
-
 import config
-from utils import sleep_time, stop_program
 import utils
+from tkinter import messagebox
+from utils import sleep_time, stop_program
 from logger import logger  # 确保导入
 
 #检测装备是否齐全

@@ -1,9 +1,7 @@
-import time
 import random
-from collections import deque
 import config
-from utils import sleep_time
 import utils
+from utils import sleep_time
 
 #自动补充体力和能量
 def check_player_vitals():

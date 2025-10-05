@@ -1,17 +1,12 @@
 import time
 import random
 import config
+import utils
 from utils import sleep_time, stop_program
 from ocr_global import ocr
 from stages.check_fishnet_status import get_fish_count
-import utils
-import navigator
+from stages import navigator
 from stages.check_assembly import check_assembly
-import time
-import random
-import config
-import navigator
-import utils
 from stages.check_fishnet_status import get_fish_count
 from logger import logger
 import tkinter as tk

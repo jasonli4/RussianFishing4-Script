@@ -5,9 +5,8 @@ from tkinter import messagebox
 import tkinter as tk
 import pyperclip
 import config
-import dxgi
 from logger import logger
-import navigator
+from  stages import navigator
 from stages.check_fishnet_status import get_fish_count_other
 from stages.relogin import relogin
 from stages.sell_fish import sell_fish_func

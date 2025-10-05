@@ -3,8 +3,8 @@ import pyautogui
 import time
 import math
 import config
-from utils import sleep_time
 import utils
+from utils import sleep_time,get_current_position
 from ocr_global import ocr
 from logger import logger
 
@@ -15,23 +15,6 @@ direction_region = {
     "width": 27,
     "height": 15
 }
-
-def get_current_position():
-    st=time.time()
-    while not config.stop_event.is_set() and time.time()-st<3:
-        results = ocr.recognize_coordinate_once()
-        if results:
-            x_coord, y_coord = results
-            if x_coord is not None and y_coord is not None:
-                if 0 < x_coord < 1000 and 0 < y_coord < 1000:
-                    current_position = (x_coord, y_coord)
-                    # logger.info(f"识别到当前位置: {current_position}")
-                    #更新当前位置
-                    config.current_position=current_position
-                    return current_position
-        sleep_time(random.uniform(0.5, 0.6))
-    return None
-
 
 def check_direction_n():
     try:

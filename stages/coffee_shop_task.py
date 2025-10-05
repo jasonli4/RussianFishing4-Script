@@ -1,12 +1,11 @@
 import random
 import re
 import config
+import time
+import utils
 from utils import sleep_time
 from ocr_global import ocr
-import utils
 from logger import logger
-import time
-
 
 
 #自动交咖啡厅的任务

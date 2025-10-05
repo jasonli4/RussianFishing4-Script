@@ -1,8 +1,8 @@
 import time
 import random
 import config
-from utils import sleep_time
 import utils
+from utils import sleep_time
 from logger import logger 
 
 #切鱼的流程

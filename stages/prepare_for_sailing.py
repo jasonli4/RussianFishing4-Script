@@ -1,7 +1,7 @@
 import random
 import config
-from utils import sleep_time
 import utils
+from utils import sleep_time
 
 #准备出海，到船上去
 def prepare_for_sailing():

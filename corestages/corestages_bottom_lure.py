@@ -3,7 +3,7 @@ import time
 import pyperclip
 import config
 from logger import logger
-import navigator
+from  stages import navigator
 from stages.check_fishnet_status import get_fish_count_other
 from stages.coffee_shop_task import coffee_shop_task_func
 from stages.cut_fish import cut_fish
@@ -827,7 +827,7 @@ def goToMap():
     map_name2 = ocr.recognize_text_from_black_bg_first(region=config.MapPickerRegionScreenshot)
 
     #先把鱼卖了
-    if fish_count > 0:
+    if fish_count and fish_count > 0:
         #小退游戏还原状态
         relogin()
         if (map_name1 and '铜湖' in map_name1.replace(" ", "") ) or (map_name2 and '铜湖' in map_name2.replace(" ", "")) :

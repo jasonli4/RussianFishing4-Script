@@ -3,12 +3,11 @@ from tkinter import messagebox
 import time
 import random
 import datetime
-
 import config
-import navigator
+import utils
 from utils import sleep_time, stop_program
 from ocr_global import ocr
-import utils
+from stages import navigator
 from logger import logger  # ✅ 添加日志模块
 
 def schedule_next_rest():

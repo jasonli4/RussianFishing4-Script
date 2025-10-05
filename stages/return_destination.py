@@ -1,9 +1,9 @@
 import random
 import config
-from utils import sleep_time
-from stages.move_to_bow import move_to_bow
 import utils
-import navigator
+from utils import sleep_time
+from stages import navigator
+from stages.move_to_bow import move_to_bow
 from logger import logger
 
 #自动回坑
@@ -11,7 +11,7 @@ def return_destination():
     """
     回坑
     """
-    current_pos =  navigator.get_current_position()
+    current_pos =  utils.get_current_position()
     logger.info(f"检测回坑识别到当前位置: {current_pos}")
     if current_pos:    
         distance =  navigator.calculate_distance(current_pos,  config.destination)

@@ -1,9 +1,9 @@
 import random
 import config
-from utils import sleep_time
-import utils
-from ocr_global import ocr
 import re
+import utils
+from utils import sleep_time
+from ocr_global import ocr
 #自动卖鱼
 def sell_fish():
     """

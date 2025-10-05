@@ -1,8 +1,7 @@
 import random
-
 import config
-from utils import sleep_time
 import utils
+from utils import sleep_time
 
 
 #走向船头

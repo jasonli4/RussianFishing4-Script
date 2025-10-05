@@ -1,10 +1,8 @@
-import time
 import random
-
 import config
+import utils
 from utils import sleep_time
 from ocr_global import ocr
-import utils
 from logger import logger 
 
 #检查轮子的类型

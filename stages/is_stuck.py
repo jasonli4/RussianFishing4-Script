@@ -2,7 +2,7 @@ from collections import deque
 import config
 from logger import logger
 from utils import sleep_time
-import navigator 
+
 
 #障碍物判断
 def is_stuck():

@@ -1147,22 +1147,22 @@ def delayed_start():
         if config.mode_type==1:
             if config.program_stopped:
                 config.program_starting = True  # ✅ 正在启动
-            import corestages_hand  # ⏱ 延迟导入
+            from corestages import corestages_hand  # ⏱ 延迟导入
             start_program(corestages_hand.run_loop)
         elif config.mode_type==2:
             if config.program_stopped:
                 config.program_starting = True  # ✅ 正在启动
-            import corestages_bottom_lure  # ⏱ 延迟导入
+            from corestages import corestages_bottom_lure  # ⏱ 延迟导入
             start_program(corestages_bottom_lure.run_loop)
         elif config.mode_type==3:
             if config.program_stopped:
                 config.program_starting = True  # ✅ 正在启动
-            import corestages  # ⏱ 延迟导入
-            start_program(corestages.run_loop)    
+            from corestages import corestages_sea  # ⏱ 延迟导入
+            start_program(corestages_sea.run_loop)
         elif config.mode_type==4:
             if config.program_stopped:
                 config.program_starting = True  # ✅ 正在启动
-            import corestages_auto_click  # ⏱ 延迟导入
+            from corestages import corestages_auto_click  # ⏱ 延迟导入
             start_program(corestages_auto_click.run_loop)
                 
 
@@ -1352,3 +1352,21 @@ def switch_to_next_auto_pit():
             attempts += 1
 
     logger.warning("❌ 没有找到可用的有效坑位。")
+
+
+from ocr_global import ocr
+def get_current_position():
+    st=time.time()
+    while not config.stop_event.is_set() and time.time()-st<3:
+        results = ocr.recognize_coordinate_once()
+        if results:
+            x_coord, y_coord = results
+            if x_coord is not None and y_coord is not None:
+                if 0 < x_coord < 1000 and 0 < y_coord < 1000:
+                    current_position = (x_coord, y_coord)
+                    # logger.info(f"识别到当前位置: {current_position}")
+                    #更新当前位置
+                    config.current_position=current_position
+                    return current_position
+        sleep_time(random.uniform(0.5, 0.6))
+    return None

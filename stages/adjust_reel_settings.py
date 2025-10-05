@@ -1,7 +1,7 @@
 import config
+import utils
 from utils import sleep_time
 from ocr_global import ocr
-import utils
 from logger import logger  # 新增导入
 
 #预先调整收线速度和摩擦力

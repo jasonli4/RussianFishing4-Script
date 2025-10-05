@@ -2,10 +2,9 @@ import re
 import time
 import random
 import config
-import navigator
+import utils
 from utils import sleep_time
 from ocr_global import ocr
-import utils
 from logger import logger  # 确保文件开头有这行
 
 #自动购买船票

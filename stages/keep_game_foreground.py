@@ -1,11 +1,10 @@
 import win32gui
 import win32con
-import tkinter as tk
-from tkinter import messagebox
-import time
 import win32api
 import random
 import config
+import tkinter as tk
+from tkinter import messagebox
 from logger import logger
 from utils import sleep_time, stop_program  # 添加 logger 导入
 

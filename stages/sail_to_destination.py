@@ -1,9 +1,8 @@
 import random
 import config
-from utils import sleep_time
 import utils
-import navigator
-
+from utils import sleep_time
+from stages import navigator
 
 #自动前往目的地
 def sail_to_destination():

@@ -3,7 +3,6 @@ import time
 import keyboard
 import config
 from logger import logger
-import navigator
 import utils
 from gui_config import launch_config_window  # ✅ GUI 配置窗口（Tkinter）
 
@@ -50,7 +49,7 @@ def monitor_and_restart():
                 if login_error_match:
                     break
                 # 是否在游戏界面
-                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or navigator.get_current_position():
+                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or utils.get_current_position():
                     logger.info("已在游戏界面。")
                     time.sleep(random.uniform(2.23, 3.235))
                     config.need_restart=True
@@ -90,7 +89,7 @@ def monitor_and_restart():
                 if serverloss:
                     break
                 # 是否在游戏界面
-                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or navigator.get_current_position():
+                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or utils.get_current_position():
                     logger.info("已在游戏界面。")
                     time.sleep(random.uniform(2.23, 3.235))
                     config.need_restart=True
@@ -130,7 +129,7 @@ def monitor_and_restart():
                 if lossgameconnect:
                     break
                 # 是否在游戏界面
-                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or navigator.get_current_position():
+                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or utils.get_current_position():
                     logger.info("已在游戏界面。")
                     time.sleep(random.uniform(2.23, 3.235))
                     config.need_restart=True

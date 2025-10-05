@@ -1,8 +1,7 @@
-import time
 import random
 import config
-from utils import sleep_time
 import utils
+from utils import sleep_time
 
 #自动点锁线程
 def set_friction_from_slider():
