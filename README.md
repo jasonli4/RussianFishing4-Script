@@ -5,7 +5,10 @@
 
   <p align="center">
         自动化钓鱼脚本，配备集成式 UI，支持 手杆、水底、路亚 以及 海图全天候钓鱼模式，并内置连点器功能。  
-      <img src="readme.png" style="" />
+  </p>
+
+  <p align="center">
+      <img src="readme.png" style="width=829px" />
   </p>
 
 
