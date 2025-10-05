@@ -137,6 +137,11 @@ pyinstaller --clean main_gpu.spec
 
 ---
 
+## 贡献与反馈
+
+通过 GitHub Issues 或 Pull Requests 提交问题或建议，提供系统环境、日志和重现步骤。
+
+
 ## 注意事项
 - 首次启动需要等待一定时间。
 - 脚本运行期间，**请勿随意干扰**脚本操作。
