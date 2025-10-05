@@ -3,16 +3,9 @@
      俄罗斯钓鱼4 自动化脚本
   </h2>
 
-
-
-  <p align="center">
-      <img src="readme.png" style="" />
-  </p>
-
   <p align="center">
         自动化钓鱼脚本，配备集成式 UI，支持 手杆、水底、路亚 以及 海图全天候钓鱼模式，并内置连点器功能。  
   </p>
-
 
 </p>
 
@@ -21,12 +14,9 @@
 ## 功能介绍
 
 ### ui界面
-<p align="center">
-  <p align="center">
+  <p align="left">
       <img src="readme.png" style="" />
   </p>
-</p>
-
 ### 手杆、水底、路亚模式
 - **自动寻路**：自动前往目的地，自动完成咖啡厅任务、卖鱼。
 - **定时换点**：自动更换钓点，提升效率。
