@@ -23,7 +23,7 @@ def random_click_and_space(
 
     # 初始化下次移动时间
     next_move_time = time.time() + random.uniform(*move_interval_range)
-
+    utils.move_mouse_random_in_region(region)
     while time.time() < end_time and not config.stop_event.is_set():
         # 判断是否该移动
         if time.time() >= next_move_time:
