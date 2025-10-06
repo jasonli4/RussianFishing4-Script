@@ -43,6 +43,55 @@ def turn_and_walk(turn_value, walk_time, sleep_min=0.23, sleep_max=0.33):
         utils.key_up('Left Shift')
 
 #老奥ob点位
+def position_27_54():
+    route = [
+        (-100, 6),
+        (-600,21.5),
+        (400,0)
+    ]
+
+    for turn, walk in route:
+        turn_and_walk(turn, walk)        
+
+    if not config.stop_event.is_set():   
+        # 向后走
+        sleep_time(random.uniform(0.23, 0.33))
+        utils.key_down('Left Shift')
+        utils.key_down('s')
+        sleep_time(0.2)
+        utils.key_up('s')
+        utils.key_up('Left Shift')    
+
+
+def position_67_59_laoao():
+   # 定义路线： (转向角度, 前进时长)
+    route = [
+        (-100, 7),
+        (100, 5),
+        (770, 25),
+        (800, 0.7),
+
+    ]
+    # 执行路线
+    for turn, walk in route:
+        turn_and_walk(turn, walk)
+
+def position_27_27():
+    route = [
+        (-100, 5),
+        (-650, 6),
+        (-550, 16),
+        (750, 2),
+        (-500, 4),
+        (-70, 3),
+        (130, 6),
+        (-780, 7.4),
+        (-690, 0.4),
+    ]
+
+    for turn, walk in route:
+        turn_and_walk(turn, walk)
+
 def position_48_28():
     route = [
         (-100, 5),

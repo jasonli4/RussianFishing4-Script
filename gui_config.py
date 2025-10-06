@@ -921,7 +921,15 @@ def launch_config_window():
         row
     )
 
-   
+    #点位变量
+    #水底
+    laoao_available_points = ["4828", "2367", "2541", "4232", "3628", "3529","2034","3558","2345","0950","2727", "6759_laoao","2754"]  # 老奥点位
+    tonghu_available_points = ["6655", "5650", "6759", "3732", "4434", "6758", "6659"]  # 铜湖点位
+    hupo_available_points = []  # 琥珀湖点位
+    ahetubahe_available_points = []  # 阿赫图巴赫点位
+    #路亚
+    baihe_available_points = ["7137", "6628", "6526", "7345", "7359"]  # 白河点位
+    aier_available_points = ["6593"]  # 艾尔克湖点位
 
     tonghu_entries = []
     tonghu_bait_entries = []
@@ -951,10 +959,9 @@ def launch_config_window():
     # 刷新所有点位下拉框选项，防止重复
     def refresh_point_options():
         used = {var.get() for _, var, _ in tonghu_id_selectors if var.get()}
-        available_points = ["6655", "5650", "6759", "3732", "4434", "6758", "6659"]
         for combo, var, idx in tonghu_id_selectors:
             current = var.get()
-            values = [p for p in available_points if p not in used or p == current]
+            values = [p for p in tonghu_available_points if p not in used or p == current]
             combo['values'] = values
         # 如果没有点位，确保下拉框为空
         if not config.tonghu_points:
@@ -993,7 +1000,7 @@ def launch_config_window():
             point_selector = ttk.Combobox(
                 group_frame,
                 textvariable=point_var,
-                values=[p for p in ["6655","5650","6759","3732","4434","6758","6659"] if p not in [pt['point_id'] for pt in config.tonghu_points if pt != point]],
+                values=[p for p in tonghu_available_points if p not in [pt['point_id'] for pt in config.tonghu_points if pt != point]],
                 state="readonly",
                 width=12,
                 font=("Microsoft YaHei", 8)
@@ -1049,8 +1056,7 @@ def launch_config_window():
     def add_tonghu_point():
         if len(config.tonghu_points) < 3:
             used_points = [p["point_id"] for p in config.tonghu_points]
-            available_points = ["6655", "5650", "6759", "3732", "4434", "6758", "6659"]
-            for point_id in available_points:
+            for point_id in tonghu_available_points:
                 if point_id not in used_points:
                     config.tonghu_points.append({"name": "", "point_id": point_id, "baits": ["", "", "",""],"meters":""})
                     save_config_to_file()
@@ -1105,10 +1111,9 @@ def launch_config_window():
     # 刷新所有点位下拉框选项，防止重复
     def refresh_laoao_point_options():
         used = {var.get() for _, var, _ in laoao_id_selectors if var.get()}
-        available_points = ["4828", "2367", "2541", "4232", "3628", "3529","2034","3558","2345","0950"]  # 假设 laoao 的可用点位，根据实际调整
         for combo, var, idx in laoao_id_selectors:
             current = var.get()
-            values = [p for p in available_points if p not in used or p == current]
+            values = [p for p in laoao_available_points if p not in used or p == current]
             combo['values'] = values
         if not config.laoao_points:
             for combo, _, _ in laoao_id_selectors:
@@ -1141,7 +1146,7 @@ def launch_config_window():
             point_selector = ttk.Combobox(
                 group_frame,
                 textvariable=point_var,
-                values=[p for p in ["4828", "2367", "2541", "4232", "3628", "3529","2034","3558","2345","0950"] if p not in [pt['point_id'] for pt in config.laoao_points if pt != point]],  # 调整可用点位
+                values=[p for p in laoao_available_points if p not in [pt['point_id'] for pt in config.laoao_points if pt != point]],  # 调整可用点位
                 state="readonly",
                 width=12,
                 font=("Microsoft YaHei", 8)
@@ -1184,8 +1189,7 @@ def launch_config_window():
     def add_laoao_point():
         if len(config.laoao_points) < 3:
             used_points = [p["point_id"] for p in config.laoao_points]
-            available_points = ["4828", "2367", "2541", "4232", "3628", "3529","2034","3558","2345","0950"]  # 调整可用点位
-            for point_id in available_points:
+            for point_id in laoao_available_points:
                 if point_id not in used_points:
                     config.laoao_points.append({"name": "", "point_id": point_id, "meters": ""})
                     save_config_to_file()
@@ -1240,10 +1244,9 @@ def launch_config_window():
 
     def refresh_hupo_point_options():
         used = {var.get() for _, var, _ in hupo_id_selectors if var.get()}
-        available_points = ["6655", "5650", "6759", "3732", "4434", "6758", "6659"]  # 假设与 tonghu 相同，根据实际调整
         for combo, var, idx in hupo_id_selectors:
             current = var.get()
-            values = [p for p in available_points if p not in used or p == current]
+            values = [p for p in hupo_available_points if p not in used or p == current]
             combo['values'] = values
         if not config.hupo_points:
             for combo, _, _ in hupo_id_selectors:
@@ -1276,7 +1279,7 @@ def launch_config_window():
             point_selector = ttk.Combobox(
                 group_frame,
                 textvariable=point_var,
-                values=[p for p in ["6655", "5650", "6759", "3732", "4434", "6758", "6659"] if p not in [pt['point_id'] for pt in config.hupo_points if pt != point]],
+                values=[p for p in hupo_available_points if p not in [pt['point_id'] for pt in config.hupo_points if pt != point]],
                 state="readonly",
                 width=12,
                 font=("Microsoft YaHei", 8)
@@ -1330,8 +1333,7 @@ def launch_config_window():
     def add_hupo_point():
         if len(config.hupo_points) < 3:
             used_points = [p["point_id"] for p in config.hupo_points]
-            available_points = ["6655", "5650", "6759", "3732", "4434", "6758", "6659"]
-            for point_id in available_points:
+            for point_id in hupo_available_points:
                 if point_id not in used_points:
                     config.hupo_points.append({"name": "", "point_id": point_id, "baits": ["", "", "", ""], "meters": ""})
                     save_config_to_file()
@@ -1386,10 +1388,9 @@ def launch_config_window():
 
     def refresh_ahetubahe_point_options():
         used = {var.get() for _, var, _ in ahetubahe_id_selectors if var.get()}
-        available_points = ["6655", "5650", "6759", "3732", "4434", "6758", "6659"]  # 假设与 tonghu 相同，根据实际调整
         for combo, var, idx in ahetubahe_id_selectors:
             current = var.get()
-            values = [p for p in available_points if p not in used or p == current]
+            values = [p for p in ahetubahe_available_points if p not in used or p == current]
             combo['values'] = values
         if not config.ahetubahe_points:
             for combo, _, _ in ahetubahe_id_selectors:
@@ -1422,7 +1423,7 @@ def launch_config_window():
             point_selector = ttk.Combobox(
                 group_frame,
                 textvariable=point_var,
-                values=[p for p in ["6655", "5650", "6759", "3732", "4434", "6758", "6659"] if p not in [pt['point_id'] for pt in config.ahetubahe_points if pt != point]],
+                values=[p for p in ahetubahe_available_points if p not in [pt['point_id'] for pt in config.ahetubahe_points if pt != point]],
                 state="readonly",
                 width=12,
                 font=("Microsoft YaHei", 8)
@@ -1476,8 +1477,7 @@ def launch_config_window():
     def add_ahetubahe_point():
         if len(config.ahetubahe_points) < 3:
             used_points = [p["point_id"] for p in config.ahetubahe_points]
-            available_points = ["6655", "5650", "6759", "3732", "4434", "6758", "6659"]
-            for point_id in available_points:
+            for point_id in ahetubahe_available_points:
                 if point_id not in used_points:
                     config.ahetubahe_points.append({"name": "", "point_id": point_id, "baits": ["", "", "", ""], "meters": ""})
                     save_config_to_file()
@@ -1678,10 +1678,9 @@ def launch_config_window():
 
     def refresh_baihe_point_options():
         used = {var.get() for _, var, _ in baihe_id_selectors if var.get()}
-        available_points = ["7137", "6628", "6526", "7345", "7359"]  # 假设与 tonghu 相同，根据实际调整
         for combo, var, idx in baihe_id_selectors:
             current = var.get()
-            values = [p for p in available_points if p not in used or p == current]
+            values = [p for p in baihe_available_points if p not in used or p == current]
             combo['values'] = values
         if not config.baihe_lure_points:
             for combo, _, _ in baihe_id_selectors:
@@ -1783,10 +1782,9 @@ def launch_config_window():
 
     def refresh_aier_point_options():
         used = {var.get() for _, var, _ in aier_id_selectors if var.get()}
-        available_points = ["6593"]  # 假设与 tonghu 相同，根据实际调整
         for combo, var, idx in aier_id_selectors:
             current = var.get()
-            values = [p for p in available_points if p not in used or p == current]
+            values = [p for p in aier_available_points if p not in used or p == current]
             combo['values'] = values
         if not config.aier_lure_points:
             for combo, _, _ in aier_id_selectors:
@@ -1819,7 +1817,7 @@ def launch_config_window():
             point_selector = ttk.Combobox(
                 group_frame,
                 textvariable=point_var,
-                values=[p for p in ["6593"] if p not in [pt['point_id'] for pt in config.aier_lure_points if pt != point]],
+                values=[p for p in aier_available_points if p not in [pt['point_id'] for pt in config.aier_lure_points if pt != point]],
                 state="readonly",
                 width=12,
                 font=("Microsoft YaHei", 8)
@@ -1839,8 +1837,7 @@ def launch_config_window():
     def add_aier_point():
         if len(config.aier_lure_points) < 3:
             used_points = [p["point_id"] for p in config.aier_lure_points]
-            available_points = ["6593"]
-            for point_id in available_points:
+            for point_id in aier_available_points:
                 if point_id not in used_points:
                     config.aier_lure_points.append({"point_id": point_id})
                     save_config_to_file()
