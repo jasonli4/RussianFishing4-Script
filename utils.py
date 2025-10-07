@@ -759,7 +759,7 @@ def check_fish(region, template_path, threshold=0.6, screenshot=None, save_debug
     res = cv2.matchTemplate(screenshot_proc, template_proc, cv2.TM_CCOEFF_NORMED)
     _, max_val, _, _ = cv2.minMaxLoc(res)
 
-    print(f"🎣 鱼漂模板匹配置信度: {max_val:.3f} (阈值 {threshold})")
+    # print(f"🎣 鱼漂模板匹配置信度: {max_val:.3f} (阈值 {threshold})")
 
     return max_val > threshold
 

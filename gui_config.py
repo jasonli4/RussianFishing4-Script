@@ -710,7 +710,7 @@ def launch_config_window():
         for k, v in hand_rod_fishing_map_map.items():
             if v == val:
                 return k
-        return "静水北顿钓黑海"
+        return "北顿钓黑海"
 
     hand_rod_fishing_map_var, hand_rod_fishing_map_combo, row = create_labeled_combobox(
         frame_fishing_hand,

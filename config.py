@@ -137,7 +137,7 @@ water_status=2
 #抛竿的力度
 hand_rod_power=70
 #漂流状态下等待的总时长
-drifting_total_duration=90
+drifting_total_duration=55
 
 #需要更换的主线名称
 hand_rod_main_line_name=''

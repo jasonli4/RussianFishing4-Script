@@ -8,6 +8,7 @@ import config
 from logger import logger
 from  stages import navigator
 from stages.check_fishnet_status import get_fish_count_other
+from stages.coffee_shop_task import coffee_shop_task_func
 from stages.relogin import relogin
 from stages.sell_fish import sell_fish_func
 import utils
@@ -38,11 +39,20 @@ def position_72_85():
     route = [
         (1080, 6),
         (650, 1.5),
-        (-500, 0)
     ]
 
     for turn, walk in route:
         turn_and_walk(turn, walk)
+
+    if config.water_status==2 and not config.stop_event.is_set():   
+        # 转向
+        sleep_time(random.uniform(0.23, 0.33))
+        utils.move_mouse_relative_smooth(
+            -500, 0,
+            duration=random.uniform(0.4, 0.6),
+            steps=random.randint(30, 50),
+            interrupt_checker=lambda: getattr(config, 'running', True)
+        )    
 
 def position_87_103():
     route = [
@@ -50,12 +60,85 @@ def position_87_103():
         (-450, 6),
         (315, 9.5),
         (-570, 1.5),
-        (-500, 0)
+    ]
+
+    for turn, walk in route:
+        turn_and_walk(turn, walk)
+
+    if config.water_status==2 and not config.stop_event.is_set():   
+        # 转向
+        sleep_time(random.uniform(0.23, 0.33))
+        utils.move_mouse_relative_smooth(
+            -500, 0,
+            duration=random.uniform(0.4, 0.6),
+            steps=random.randint(30, 50),
+            interrupt_checker=lambda: getattr(config, 'running', True)
+        )        
+
+def position_96_137():
+    route = [
+        (-650, 4),
+        (200, 17),
+        (-620, 6),
+        (580, 3.5),
+        (-750, 0.4)
 
     ]
 
     for turn, walk in route:
         turn_and_walk(turn, walk)
+
+    if config.water_status==2 and not config.stop_event.is_set():   
+        # 转向
+        sleep_time(random.uniform(0.23, 0.33))
+        utils.move_mouse_relative_smooth(
+            -350, 0,
+            duration=random.uniform(0.4, 0.6),
+            steps=random.randint(30, 50),
+            interrupt_checker=lambda: getattr(config, 'running', True)
+        )                
+
+def position_99_133():
+    route = [
+        (-650, 4),
+        (200, 17),
+        (-620, 5.5),
+        (620, 4.5),
+        (-650, 1),
+        (550, 4),
+        (-750, 0.6)
+    ]
+    for turn, walk in route:
+        turn_and_walk(turn, walk)
+
+    if config.water_status==2 and not config.stop_event.is_set():   
+        # 转向
+        sleep_time(random.uniform(0.23, 0.33))
+        utils.move_mouse_relative_smooth(
+            -350, 0,
+            duration=random.uniform(0.4, 0.6),
+            steps=random.randint(30, 50),
+            interrupt_checker=lambda: getattr(config, 'running', True)
+        )                
+
+def position_72_160():
+    route = [
+        (280, 8),
+        (580, 3)
+    ]
+
+    for turn, walk in route:
+        turn_and_walk(turn, walk)
+
+    if config.water_status==2 and not config.stop_event.is_set():   
+        # 转向
+        sleep_time(random.uniform(0.23, 0.33))
+        utils.move_mouse_relative_smooth(
+            -350, 0,
+            duration=random.uniform(0.4, 0.6),
+            steps=random.randint(30, 50),
+            interrupt_checker=lambda: getattr(config, 'running', True)
+        )    
 
 def run_loop():
     if config.hand_rod_fishing_mode ==1:
@@ -158,50 +241,44 @@ def goToMap():
                 sleep_time(random.uniform(1.23, 1.33))
             
             elif config.hand_rod_fishing_map==2:
+                #去咖啡厅
+                route = [
+                    (280, 4),
+                    (-600, 0)
+                ]
 
-                # 向左转
-                if config.stop_event.is_set():
-                    return
-                sleep_time(random.uniform(1.23, 1.33))
-                utils.move_mouse_relative_smooth(-1450, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-                # 向前走
-                if config.stop_event.is_set():
-                    return
-                sleep_time(random.uniform(1.23, 1.33))
-                utils.key_down('Left Shift')
-                utils.key_down('w')
-                sleep_time(5)
-                utils.key_up('w')
-                utils.key_up('Left Shift')
-
-                if config.stop_event.is_set():
-                    return
-                sell_fish_func()
+                for turn, walk in route:
+                    turn_and_walk(turn, walk)
                 
-                # 向前走
+                # #交任务
                 if config.stop_event.is_set():
                     return
-                sleep_time(random.uniform(1.23, 1.33))
-                utils.key_down('Left Shift')
-                utils.key_down('s')
-                sleep_time(5)
-                utils.key_up('s')
-                utils.key_up('Left Shift')
+                coffee_shop_task_func()
 
-                # 向右转
+                #前往鱼市
+                route = [
+                    (-800, 5.3),
+                ]
+
+                for turn, walk in route:
+                    turn_and_walk(turn, walk)
+                
+                # #卖鱼
                 if config.stop_event.is_set():
                     return
-                sleep_time(random.uniform(1.23, 1.33))
-                utils.move_mouse_relative_smooth(1450, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-                sleep_time(random.uniform(1.23, 1.33))
+                sell_fish_func()    
+                
+                #还原视角和位置
+                relogin()                
 
 def hand_next_position():
     
     if config.hand_rod_fishing_map==1:
         positions=[{"point_id":"7285"},{"point_id":"87103"}]
     elif config.hand_rod_fishing_map==2:
-        positions=[]
+        positions=[{"point_id":"96137"},{"point_id":"99133"},{"point_id":"72160"}]
+        # positions=[{"point_id":"72160"}]
+
 
     # 检查点位列表是否为空
     if not positions:
@@ -291,6 +368,7 @@ def reconfigure_rod():
     utils.press_key('v', 0.1)
     wait_random((0.81, 0.92))
     utils.move_mouse_random_in_region((1006, 129, 875, 927))
+    wait_random((0.81, 0.92))
 
     # === 需要配置的部位 (region, 名称) ===
     parts = [
@@ -521,15 +599,36 @@ def shougan():
         # utils.key_down('Left Shift')
         start_time = time.time()
         inner_timeout = 10  # 20秒
-        is_up_left = False
+        is_space=False
         #不断检测是否需要入护
         while not config.stop_event.is_set():
             inner_elapsed = time.time() - start_time
             if inner_elapsed >= inner_timeout:
-                if not is_up_left:
-                    utils.mouse_up_left()
-                    is_up_left = True
-                # return True
+                if not is_space:
+                    utils.key_down('Space')
+                    is_space=True
+                utils.mouse_up_left()
+
+                # ========= 非阻塞等待 3.2~3.4 秒 =========
+                wait_time = random.uniform(3.21, 3.42)
+                wait_start = time.time()
+                while time.time() - wait_start < wait_time:
+                    if config.stop_event.is_set():
+                        return False
+
+                    # 等待期间也检测状态
+                    if utils.check_template_in_region(config.region_keepnet, 'keepnet.png'):
+                        return True
+                    if utils.check_template_in_region(config.region_cast_rod, 'cast_rod.png'):
+                        return False
+                    if utils.check_template_in_region(config.region_hook_status, 'handerror.png'):
+                        return False
+
+                    sleep_time(random.uniform(0.11, 0.12))  # 稍微等一点避免CPU占用高
+                # ======================================
+
+                utils.mouse_down_left()
+                start_time = time.time()
             # 鱼是不是已经收上来了
             if utils.check_template_in_region(config.region_keepnet, 'keepnet.png'):
                 return True
@@ -537,6 +636,7 @@ def shougan():
                 return False
             if utils.check_template_in_region(config.region_hook_status,'handerror.png'):
                 return False
+            sleep_time(random.uniform(0.11, 0.12))
         return False
     #处理收上来的鱼
     def handle_fish():
