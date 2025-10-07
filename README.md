@@ -1,5 +1,5 @@
 <p align="left">
-  <h1 align="left">
+  <h1 align="center">
      俄罗斯钓鱼4 自动化脚本
   </h1>
 
