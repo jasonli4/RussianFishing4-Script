@@ -5,7 +5,6 @@ import utils
 from utils import sleep_time, stop_program
 from ocr_global import ocr
 from stages.check_fishnet_status import get_fish_count
-from stages import navigator
 from stages.check_assembly import check_assembly
 from stages.check_fishnet_status import get_fish_count
 from logger import logger
@@ -21,7 +20,7 @@ def in_sea_map():
         """
         是否在游戏界面
         """
-        if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or navigator.get_current_position():
+        if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or utils.get_current_position():
             logger.info("🎣 已在游戏界面，准备操作...")
             break
         sleep_time(random.uniform(0.4, 0.5))
@@ -36,7 +35,7 @@ def in_sea_map():
     check_assembly()
     
     # 获取当前坐标 + 鱼护状态
-    current_pos = navigator.get_current_position()
+    current_pos = utils.get_current_position()
     logger.debug(f"启动时的坐标: {current_pos}")
 
     fish_quantity = get_fish_count()
