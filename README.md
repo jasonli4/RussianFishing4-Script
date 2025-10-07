@@ -157,6 +157,7 @@ pyinstaller --clean main_gpu.spec
 
 ## 社区
 [![Discord](https://img.shields.io/discord/123456789012345678?label=Join%20Discord&logo=discord&logoColor=white&color=5865F2)](https://discord.gg/7X3N9jTh)
+[![Join Discord](https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/discord.svg)](https://discord.gg/7X3N9jTh)
 
 
 ## 贡献与反馈
