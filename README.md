@@ -2,7 +2,7 @@
 
 
   
-  <h1 align="center">
+  <h1 align="left">
      俄罗斯钓鱼4 自动化脚本
   </h1>
 
