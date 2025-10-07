@@ -1,21 +1,23 @@
 <p align="left">
-
   <h1 align="left">
      俄罗斯钓鱼4 自动化脚本
   </h1>
 
   <p align="left">
-        自动化钓鱼脚本，配备集成式 UI，支持 手杆、水底、路亚 以及 海图全天候钓鱼模式。  
+        自动化钓鱼脚本，配备集成式 UI，支持 手杆、水底、路亚 以及 海图全天候钓鱼模式，并内置连点器功能。  
   </p>
-
-  <p align="left">
-      <img src="readme.png" style="" />
-  </p>
-
 
 </p>
 
 ---
+
+## UI
+
+<p align="left">
+      <img src="readme.png" style="" />
+</p>
+
+
 
 ## 功能介绍
 
@@ -149,6 +151,10 @@ pyinstaller --clean main_gpu.spec
 ## 语言支持
 
 目前只支持简体中文，可以贡献代码以支持多语言
+
+## 社区
+[![Discord](https://img.shields.io/discord/123456789012345678?label=Join%20Discord&logo=discord&logoColor=white&color=5865F2)](https://discord.gg/7X3N9jTh)
+
 
 ## 贡献与反馈
 
