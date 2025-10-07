@@ -151,12 +151,12 @@ pyinstaller --clean main_gpu.spec
 - 避免长时间脚本挂机，配合手动操作，可以降低封号风险。
 - 本脚本仅为自动化辅助工具，使用者需自行承担使用风险。
 
+## 社区
+[![Discord](https://img.shields.io/badge/Join%20Discord-5865F2?logo=discord&logoColor=white)](https://discord.gg/7X3N9jTh)
+
 ## 语言支持
 
 目前只支持简体中文，可以贡献代码以支持多语言
-
-## 社区
-[![Discord](https://img.shields.io/badge/Join%20Discord-5865F2?logo=discord&logoColor=white)](https://discord.gg/7X3N9jTh)
 
 ## 贡献与反馈
 
