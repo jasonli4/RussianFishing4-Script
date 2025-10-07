@@ -31,9 +31,9 @@ def turn_and_walk(turn_value, walk_time, sleep_min=0.23, sleep_max=0.33):
             interrupt_checker=lambda: getattr(config, 'running', True)
         )
     if not config.stop_event.is_set():   
-        if random.random() < 0.2:  # 20%长暂停
-            sleep_time(random.uniform(5.0, 10.0))
-            logger.info("模拟玩家暂停")
+        # if random.random() < 0.2:  # 20%长暂停
+        #     sleep_time(random.uniform(5.0, 10.0))
+        #     logger.info("模拟玩家暂停")
         # 向前走
         sleep_time(random.uniform(sleep_min, sleep_max))
         utils.key_down('Left Shift')
