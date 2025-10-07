@@ -1,14 +1,14 @@
-<p align="center">
+<p align="left">
 
-  <h2 align="center">
+  <h2 align="left">
      俄罗斯钓鱼4 自动化脚本
   </h2>
 
-  <p align="center">
+  <p align="left">
         自动化钓鱼脚本，配备集成式 UI，支持 手杆、水底、路亚 以及 海图全天候钓鱼模式。  
   </p>
 
-  <p align="center">
+  <p align="left">
       <img src="readme.png" style="" />
   </p>
 
