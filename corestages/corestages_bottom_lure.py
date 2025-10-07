@@ -414,7 +414,9 @@ def bottom_next_position():
     elif config.bottom_map==1:
         positions=config.hupo_points
     elif config.bottom_map==2:
-        positions=config.tonghu_points    
+        positions=config.tonghu_points 
+    elif config.bottom_map==4:
+        positions=config.weiyounuoke_mhl_points          
 
     # 检查点位列表是否为空
     if not positions:
@@ -577,6 +579,24 @@ def dagou_path():
     sleep_time(0.5)
     utils.key_up('w')
     utils.key_up('Left Shift')
+
+#惟有诺克河点位
+def position_99_121 ():
+    # 定义路线
+    route = [
+        (1080, 0.7),    
+        (700, 9),
+        (750, 13),
+        (200, 10),
+        (400, 5),
+        (-400, 10),
+        (-300, 5),
+        (450, 3.5),
+    ]
+
+    # 执行路线
+    for turn, walk in route:
+        turn_and_walk(turn, walk)
 
 #白河路亚点位
 def position_71_37 ():
@@ -860,6 +880,9 @@ def goToMap():
         elif config.bottom_map==2:
             mapName='铜湖'        
             region=config.TonghuMapPickerRegionScreenshotClick
+        elif config.bottom_map==4:
+            mapName='惟有诺克河'        
+            region=config.weiyouMapPickerRegionScreenshotClick
     else:
         if config.lure_map==0:
             mapName='斯特罗格湖'
@@ -925,6 +948,35 @@ def goToMap():
                 return
             route = [
                 (750, 3.5)
+            ]
+            for turn, walk in route:
+                turn_and_walk(turn, walk)
+            #卖鱼                
+            if config.stop_event.is_set():
+                return
+            sell_fish_func()
+            sleep_time(random.uniform(1.23, 1.33))
+
+        if (map_name1 and '惟有诺克河' in map_name1.replace(" ", "") ) or (map_name2 and '惟有诺克河' in map_name2.replace(" ", "")) :
+            #转向咖啡厅            
+            sleep_time(random.uniform(1.23, 1.33))
+            if config.stop_event.is_set():
+                return
+            route = [
+                (900, 2)
+            ]
+            for turn, walk in route:
+                turn_and_walk(turn, walk)
+            #交任务
+            if config.stop_event.is_set():
+                return
+            coffee_shop_task_func()
+            #转向鱼市               
+            sleep_time(random.uniform(1.23, 1.33))
+            if config.stop_event.is_set():
+                return
+            route = [
+                (-1400, 2)
             ]
             for turn, walk in route:
                 turn_and_walk(turn, walk)
@@ -1228,7 +1280,7 @@ def fish_bottom():
     utils.press_key('a',0.2)
     sleep_time(random.uniform(0.81, 0.92))
 
-    if not baits or (baits and baits[3]=="") :
+    if (not baits or (baits and baits[3]=="")) and config.chum_the_water:
         #手抛窝子
         wozi=item["name"]
         if wozi!="":

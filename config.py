@@ -93,6 +93,8 @@ gear_ratio = 0.3
 is_rainbow_line=True
 #是否保留不达标的鱼
 keep_underperforming_fish=False
+#是否打窝(手抛)
+chum_the_water=True
 #路亚模式，1是白河路亚，2是老奥打狗
 lure_mode=1
 #水底轮子收线速度
@@ -110,6 +112,7 @@ laoao_points=[]
 hupo_points=[]
 ahetubahe_points=[]
 tonghu_points=[]
+weiyounuoke_mhl_points=[]
 baihe_lure_points=[]
 aier_lure_points=[]
 

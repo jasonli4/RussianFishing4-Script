@@ -108,11 +108,13 @@ def save_config_to_file():
         "hupo_points": config.hupo_points,
         "ahetubahe_points": config.ahetubahe_points,
         "tonghu_points": config.tonghu_points,
+        "weiyounuoke_mhl_points": config.weiyounuoke_mhl_points,
         "baihe_lure_points": config.baihe_lure_points,
         "aier_lure_points": config.aier_lure_points,
         #其他
         "is_rainbow_line": config.is_rainbow_line,
-        "keep_underperforming_fish": config.keep_underperforming_fish
+        "keep_underperforming_fish": config.keep_underperforming_fish,
+        "chum_the_water": config.chum_the_water        
     }
     with open(CONFIG_FILE, "w", encoding="utf-8") as f:
         json.dump(config_dict, f, indent=2, ensure_ascii=False)
@@ -199,6 +201,7 @@ def load_config_from_file():
 
         config.is_rainbow_line = data.get("is_rainbow_line", getattr(config, "is_rainbow_line", False))
         config.keep_underperforming_fish = data.get("keep_underperforming_fish", getattr(config, "keep_underperforming_fish", False))
+        config.chum_the_water = data.get("chum_the_water", getattr(config, "chum_the_water", False))        
         # 加载老奥点位，限制最多四个
         laoao_loaded_points = data.get("laoao_points", config.laoao_points)[:3]
         # 确保每个点位有 name, point_id, baits
@@ -245,6 +248,16 @@ def load_config_from_file():
 
             } for i, p in enumerate(loaded_points)
         ]
+        # 加载惟有诺克河-梅花鲈点位，限制最多三个
+        weiyounuoke_mhl_loaded_points = data.get("weiyounuoke_mhl_points", config.weiyounuoke_mhl_points)[:3]
+        # 确保每个点位有 name, point_id, baits
+        config.weiyounuoke_mhl_points = [
+            {
+                "name": p.get("name", ""),
+                "point_id": p.get("point_id", f"point_{i+1}"),
+                "meters": p.get("meters", "")
+                } for i, p in enumerate(weiyounuoke_mhl_loaded_points)
+        ]        
         # 加载白河点位，限制最多三个
         baihe_lure_loaded_points = data.get("baihe_lure_points", config.baihe_lure_points)[:3]
         # 确保每个点位有 name, point_id, baits
@@ -385,6 +398,7 @@ def launch_config_window():
         auto_mode_var.set(get_auto_mode_text(config.auto_mode))
         is_rainbow_line_var.set(config.is_rainbow_line)
         keep_underperforming_fish_var.set(config.keep_underperforming_fish)
+        chum_the_water_var.set(config.chum_the_water)
         is_cut_fish_var.set(config.is_cut_fish)
         bottom_reel_speed_var.set(str(config.bottom_reel_speed))
         bottom_reel_friction_var.set(str(config.bottom_reel_friction))
@@ -397,11 +411,13 @@ def launch_config_window():
         render_laoao_points()
         render_hupo_points()
         render_ahetubahe_points()
+        render_weiyounuoke_mhl_points()
         render_baihe_points()
         update_add_button_state()
         update_laoao_add_button_state()
         update_hupo_add_button_state()
         update_ahetubahe_add_button_state()
+        update_weiyounuoke_mhl_add_button_state()
         update_baihe_add_button_state()
         update_aier_add_button_state()
 
@@ -856,13 +872,22 @@ def launch_config_window():
         save_config_to_file()
     keep_underperforming_fish_var.trace_add("write", trace_func2)
 
-    is_cut_fish_var = tk.BooleanVar(value=getattr(config, "is_cut_fish", False))
-    cb3 = ttk.Checkbutton(checkbox_container, text="是否切鱼肉", variable=is_cut_fish_var)
+
+    chum_the_water_var = tk.BooleanVar(value=getattr(config, "chum_the_water", False))
+    cb2 = ttk.Checkbutton(checkbox_container, text="是否打窝（手抛）", variable=chum_the_water_var)
+    cb2.pack(side="left", padx=2)
+    def trace_func4(*args):
+        setattr(config, "chum_the_water", bool(chum_the_water_var.get()))
+        save_config_to_file()
+    chum_the_water_var.trace_add("write", trace_func4)
+    
+    is_cut_fish_bottom_lure_var = tk.BooleanVar(value=getattr(config, "is_cut_fish", False))
+    cb3 = ttk.Checkbutton(checkbox_container, text="是否切鱼肉", variable=is_cut_fish_bottom_lure_var)
     cb3.pack(side="left", padx=2)
     def trace_func3(*args):
-        setattr(config, "is_cut_fish", bool(is_cut_fish_var.get()))
+        setattr(config, "is_cut_fish", bool(is_cut_fish_bottom_lure_var.get()))
         save_config_to_file()
-    is_cut_fish_var.trace_add("write", trace_func3)
+    is_cut_fish_bottom_lure_var.trace_add("write", trace_func3)
 
     row += 1
 
@@ -904,7 +929,7 @@ def launch_config_window():
     )
 
       # bottom_map_options = {"旧奥斯特罗格湖": 0, "琥珀湖": 1, "铜湖": 2}
-    bottom_map_options = {"旧奥斯特罗格湖": 0, "铜湖": 2}
+    bottom_map_options = {"旧奥斯特罗格湖": 0, "铜湖": 2,"惟有诺克河-梅花鲈":4}
 
     def get_bottom_map_text(val):
         for k, v in bottom_map_options.items():
@@ -927,6 +952,7 @@ def launch_config_window():
     tonghu_available_points = ["6655", "5650", "6759", "3732", "4434", "6758", "6659"]  # 铜湖点位
     hupo_available_points = []  # 琥珀湖点位
     ahetubahe_available_points = []  # 阿赫图巴赫点位
+    weiyounuoke_mhl_available_points = ["99121"]
     #路亚
     baihe_available_points = ["7137", "6628", "6526", "7345", "7359"]  # 白河点位
     aier_available_points = ["6593"]  # 艾尔克湖点位
@@ -1507,6 +1533,146 @@ def launch_config_window():
     render_ahetubahe_points()
     update_ahetubahe_add_button_state()
 
+    # 为 weiyounuoke_mhl_points 添加 UI，类似于 tonghu，但无 baits，只有 name, point_id, meters
+    weiyounuoke_mhl_entries = []
+    weiyounuoke_mhl_meters_entries = []
+    weiyounuoke_mhl_id_selectors = []  # 保存 (Combobox, StringVar, index)
+
+    # 创建用于动态点位的容器框架
+    weiyounuoke_mhl_container_row = row
+    weiyounuoke_mhl_container = ttk.Frame(frame_fishing_params_bottom)
+    weiyounuoke_mhl_container.grid(row=row, column=0, columnspan=2, sticky="w", pady=0, padx=0)
+    row += 1
+
+    # 保存 config 到文件的辅助函数
+    def save_weiyounuoke_mhl_name(key, value):
+        config.weiyounuoke_mhl_points[key]["name"] = value
+        save_config_to_file()
+
+    def save_weiyounuoke_mhl_meters(key, value):
+        config.weiyounuoke_mhl_points[key]["meters"] = value
+        save_config_to_file()
+
+
+    # 刷新所有点位下拉框选项，防止重复
+    def refresh_weiyounuoke_mhl_point_options():
+        used = {var.get() for _, var, _ in weiyounuoke_mhl_id_selectors if var.get()}
+        for combo, var, idx in weiyounuoke_mhl_id_selectors:
+            current = var.get()
+            values = [p for p in weiyounuoke_mhl_available_points if p not in used or p == current]
+            combo['values'] = values
+            
+        if not config.weiyounuoke_mhl_points:
+            for combo, _, _ in weiyounuoke_mhl_id_selectors:
+                combo['values'] = []
+
+
+
+    # 渲染点位函数
+    def render_weiyounuoke_mhl_points():
+        for widget in weiyounuoke_mhl_container.winfo_children():
+            widget.destroy()
+        weiyounuoke_mhl_entries.clear()
+        weiyounuoke_mhl_meters_entries.clear()
+        weiyounuoke_mhl_id_selectors.clear()
+
+        if not config.weiyounuoke_mhl_points:
+            ttk.Label(weiyounuoke_mhl_container, text="暂无惟有诺克河点位配置").grid(row=0, column=0, sticky="w")
+            return
+
+        row_frame = None
+        for idx, point in enumerate(config.weiyounuoke_mhl_points):
+            if idx % 3 == 0:
+                row_frame = ttk.Frame(weiyounuoke_mhl_container)
+                row_frame.grid(row=idx // 3, column=0, sticky="w", pady=0, padx=0)
+
+            group_frame = ttk.Frame(row_frame)
+            group_frame.grid(column=idx % 3, row=0, sticky="w", padx=0)
+
+            # 点位编号下拉框
+            ttk.Label(group_frame, text="点位编号").grid(row=0, column=0, sticky="w", pady=2, padx=2)
+            point_var = tk.StringVar(value=point['point_id'])
+            point_selector = ttk.Combobox(
+                group_frame,
+                textvariable=point_var,
+                values=[p for p in ["7349"] if p not in [pt['point_id'] for pt in config.weiyounuoke_mhl_points if pt != point]],  # 调整可用点位
+                state="readonly",
+                width=12,
+                font=("Microsoft YaHei", 8)
+            )
+            point_selector.grid(row=0, column=1, sticky="w", pady=2, padx=2)
+            point_var.trace_add("write", lambda *a, v=point_var, i=idx: [config.weiyounuoke_mhl_points[i].update({'point_id': v.get()}), refresh_weiyounuoke_mhl_point_options(), save_config_to_file()])
+            weiyounuoke_mhl_id_selectors.append((point_selector, point_var, idx))
+
+
+            # 窝子名称
+            _,entry, _ = create_labeled_entry(
+                group_frame,
+                f"窝子名称",
+                point["name"],
+                lambda v, i=idx: [save_weiyounuoke_mhl_name(i, v), save_config_to_file()],
+                1
+            )
+            entry.config(width=15,font=("Microsoft YaHei", 8))
+            weiyounuoke_mhl_entries.append(entry)
+
+
+            # 卡米数
+            _,meters_entry, _ = create_labeled_entry(
+                group_frame,
+                f"卡米数",
+                point["meters"],
+                lambda v, i=idx: [save_weiyounuoke_mhl_meters(i, v), save_config_to_file()],
+                2
+            )
+            meters_entry.config(width=15,font=("Microsoft YaHei", 8))
+            weiyounuoke_mhl_meters_entries.append(meters_entry)
+
+            # 删除按钮
+            ttk.Button(
+                group_frame,
+                text="删除",
+                style="Small.TButton",
+                command=lambda i=idx: [config.weiyounuoke_mhl_points.pop(i), save_config_to_file(), render_weiyounuoke_mhl_points(), update_weiyounuoke_mhl_add_button_state()]
+            ).grid(row=3, column=0, columnspan=2, pady=2)
+
+    # 添加点位按钮
+    def add_weiyounuoke_mhl_point():
+        if len(config.weiyounuoke_mhl_points) < 3:
+            used_points = [p["point_id"] for p in config.weiyounuoke_mhl_points]
+            for point_id in weiyounuoke_mhl_available_points:
+                if point_id not in used_points:
+                    config.weiyounuoke_mhl_points.append({"name": "", "point_id": point_id, "meters": ""})
+                    save_config_to_file()
+                    render_weiyounuoke_mhl_points()
+                    break
+            else:
+                logger.warning("无可用点位可添加")
+        else:
+            logger.warning("已达到最大点位数量（3个）")
+
+
+    weiyounuoke_mhl_add_button = ttk.Button(
+        frame_fishing_params_bottom,
+        text="添加惟有诺克河点位",
+        style="Small.TButton",
+        command=lambda: [add_weiyounuoke_mhl_point(), update_weiyounuoke_mhl_add_button_state()]
+    )
+    weiyounuoke_mhl_add_button.grid(row=row, column=0, columnspan=2, pady=2, sticky="w")
+    row += 1
+
+
+    def update_weiyounuoke_mhl_add_button_state():
+        if len(config.weiyounuoke_mhl_points) >= 3:
+            weiyounuoke_mhl_add_button.config(state="disabled")
+        else:
+            weiyounuoke_mhl_add_button.config(state="normal")
+
+
+    # 初始渲染
+    render_weiyounuoke_mhl_points()
+    update_weiyounuoke_mhl_add_button_state()
+
     # 更新 update_fields_state 以控制新容器可见性
     def update_fields_state(*args):
         is_bottom_mode = config.auto_mode in [0, 2]
@@ -1530,9 +1696,9 @@ def launch_config_window():
             add_button.grid(row=row+1, column=0, columnspan=2, pady=0, sticky="w")
 
         def hide_all_containers():
-            for c in [laoao_container, hupo_container, tonghu_container, ahetubahe_container, baihe_container, aier_container]:
+            for c in [laoao_container, hupo_container, tonghu_container, ahetubahe_container,weiyounuoke_mhl_container, baihe_container, aier_container]:
                 c.grid_remove()
-            for b in [laoao_add_button, hupo_add_button, tonghu_add_button, ahetubahe_add_button, baihe_add_button, aier_add_button]:
+            for b in [laoao_add_button, hupo_add_button, tonghu_add_button, ahetubahe_add_button,weiyounuoke_mhl_add_button, baihe_add_button, aier_add_button]:
                 b.grid_remove()
 
         # ------------------ 更新控件状态 ------------------
@@ -1544,6 +1710,8 @@ def launch_config_window():
                 "normal" if is_bottom_mode and config.bottom_map == 2 else "disabled")
         set_state(ahetubahe_entries, ahetubahe_bait_entries, ahetubahe_meters_entries, ahetubahe_id_selectors, ahetubahe_add_button,
                 "normal" if is_bottom_mode and config.bottom_map == 3 else "disabled")
+        set_state(weiyounuoke_mhl_entries, [], weiyounuoke_mhl_meters_entries, weiyounuoke_mhl_id_selectors, weiyounuoke_mhl_add_button,
+                "normal" if is_bottom_mode and config.bottom_map == 4 else "disabled")        
         set_state([], [], [], [], baihe_add_button,
                 "normal" if is_lure_mode and config.lure_map == 1 else "disabled")
         set_state([], [], [], [], aier_add_button,
@@ -1561,6 +1729,8 @@ def launch_config_window():
                 show_container(tonghu_container, tonghu_add_button, tonghu_container_row)
             elif config.bottom_map == 3:
                 show_container(ahetubahe_container, ahetubahe_add_button, ahetubahe_container_row)
+            elif config.bottom_map == 4:
+                show_container(weiyounuoke_mhl_container, weiyounuoke_mhl_add_button, weiyounuoke_mhl_container_row)
 
         if is_lure_mode and config.lure_map == 1:
             show_container(baihe_container, baihe_add_button, baihe_container_row)
