@@ -605,7 +605,7 @@ def shougan():
             inner_elapsed = time.time() - start_time
             if inner_elapsed >= inner_timeout:
                 if not is_space:
-                    utils.key_down('Space')
+                    utils.press_key('Space')
                     is_space=True
                 utils.mouse_up_left()
 
