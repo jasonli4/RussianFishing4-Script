@@ -1595,7 +1595,7 @@ def launch_config_window():
             point_selector = ttk.Combobox(
                 group_frame,
                 textvariable=point_var,
-                values=[p for p in ["7349"] if p not in [pt['point_id'] for pt in config.weiyounuoke_mhl_points if pt != point]],  # 调整可用点位
+                values=[p for p in weiyounuoke_mhl_available_points if p not in [pt['point_id'] for pt in config.weiyounuoke_mhl_points if pt != point]],  # 调整可用点位
                 state="readonly",
                 width=12,
                 font=("Microsoft YaHei", 8)
