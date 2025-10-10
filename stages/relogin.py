@@ -96,27 +96,32 @@ def relogin():
     """
     while not config.stop_event.is_set():
         # 是否在菜单界面
-        if ocr.recognize_text_from_black_bg_first(
-            region=config.QuitGameButtonRegionScreenshotFly if config.is_fly_ticket else config.QuitGameButtonRegionScreenshot
-        ).strip() == "退出":
+        quit_button1 = utils.find_template_in_regions(config.QuitGameButtonRegionScreenshot, template_filename="quit1.png")
+        quit_button2 = utils.find_template_in_regions(config.QuitGameButtonRegionScreenshot, template_filename="quit2.png")
+        quit_button = quit_button1 or quit_button2
+        if quit_button:
+            logger.info("检测到菜单界面。")
             break
-
         # 是否在游戏界面
         if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or navigator.get_current_position():
             logger.info("已在游戏界面。")
             sleep_time(random.uniform(0.23, 0.24))
             utils.press_key('esc')
             sleep_time(random.uniform(0.25, 0.26))
-            break
+            # 是否在菜单界面
+            quit_button1 = utils.find_template_in_regions(config.QuitGameButtonRegionScreenshot, template_filename="quit1.png")
+            quit_button2 = utils.find_template_in_regions(config.QuitGameButtonRegionScreenshot, template_filename="quit2.png")
+            quit_button = quit_button1 or quit_button2
+            if quit_button:
+                logger.info("检测到菜单界面。")
+                break
         
         sleep_time(random.uniform(0.4, 0.5))
     
     if not config.stop_event.is_set():
         # 把鼠标移动到退出游戏按钮区域
         sleep_time(random.uniform(0.23, 0.235))
-        utils.move_mouse_random_in_region(
-            region=config.QuitGameButtonRegionClickFly if config.is_fly_ticket else config.QuitGameButtonRegionClick
-        )
+        utils.move_mouse_random_in_region((quit_button[0]["left"], quit_button[0]["top"], quit_button[0]["width"], quit_button[0]["height"]))
         sleep_time(random.uniform(0.53, 0.54))
         utils.key_down('Left Shift')
         sleep_time(random.uniform(0.53, 0.54))
