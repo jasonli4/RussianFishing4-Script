@@ -95,6 +95,8 @@ is_rainbow_line=True
 keep_underperforming_fish=False
 #是否打窝(手抛)
 chum_the_water=True
+#是否切鱼肉，True是切鱼肉，False是不切鱼肉
+is_cut_fish_bottom_lure=False
 #路亚模式，1是白河路亚，2是老奥打狗
 lure_mode=1
 #水底轮子收线速度
@@ -172,8 +174,9 @@ standalone_path = r'C:\Games\RF4_CN\RF4Launcher.exe'
 #模式类型，1为手杆钓鱼，2为水底和路亚，3为海图搬砖,4为连点器
 mode_type=1
 
-min_sleep_time=3
-max_sleep_time=4
+# 休息设置
+rest_interval_hours = 3        # 每3小时休息一次
+rest_duration_minutes = 60     # 每次休息15分钟
 
 
 # === 控制标志 ===

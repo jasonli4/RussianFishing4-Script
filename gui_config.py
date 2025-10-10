@@ -88,8 +88,8 @@ def save_config_to_file():
         "steam_path": config.steam_path,
         "standalone_path": config.standalone_path,
         "mode_type": config.mode_type,
-        "min_sleep_time": config.min_sleep_time,
-        "max_sleep_time": config.max_sleep_time,
+        "rest_interval_hours": config.rest_interval_hours,
+        "rest_duration_minutes": config.rest_duration_minutes,
         #手杆
         "hand_rod_fishing_mode": config.hand_rod_fishing_mode,
         "hand_rod_fishing_map": config.hand_rod_fishing_map,
@@ -182,8 +182,8 @@ def load_config_from_file():
         config.steam_path = data.get("steam_path", getattr(config, "steam_path", r'C:\Program Files (x86)\Steam\steam.exe'))
         config.standalone_path = data.get("standalone_path", getattr(config, "standalone_path", r'C:\Games\RF4_CN\RF4Launcher.exe'))
         config.mode_type = data.get("mode_type", getattr(config, "mode_type", 1))
-        config.min_sleep_time = data.get("min_sleep_time", getattr(config, "min_sleep_time", 3))
-        config.max_sleep_time = data.get("max_sleep_time", getattr(config, "max_sleep_time", 4))
+        config.rest_interval_hours = data.get("rest_interval_hours", getattr(config, "rest_interval_hours", 3))
+        config.rest_duration_minutes = data.get("rest_duration_minutes", getattr(config, "rest_duration_minutes", 15))
         #手杆
         config.hand_rod_fishing_mode = data.get("hand_rod_fishing_mode", getattr(config, "hand_rod_fishing_mode", 1))
         config.hand_rod_fishing_map = data.get("hand_rod_fishing_map", getattr(config, "hand_rod_fishing_map", 1))
@@ -377,8 +377,8 @@ def launch_config_window():
         stamina_var.set(str(config.stamina_btn))
         hunger_var.set(str(config.hunger_btn))
         max_cast_line_meters_var.set(str(config.max_cast_line_meters))
-        min_sleep_time_var.set(str(config.min_sleep_time))
-        max_sleep_time_var.set(str(config.max_sleep_time))
+        rest_interval_hours_var.set(str(config.rest_interval_hours))
+        rest_duration_minutes_var.set(str(config.rest_duration_minutes))
 
         # 更新手杆
         hand_rod_fishing_mode_var.set(get_hand_rod_fishing_mode_text(config.hand_rod_fishing_mode))
@@ -599,18 +599,18 @@ def launch_config_window():
     stamina_var, stamina_entry, row = create_labeled_entry(frame_home, "体力键", config.stamina_btn, lambda v: setattr(config, "stamina_btn", int(v) if v.isdigit() else config.stamina_btn), row)
     hunger_var, hunger_entry, row = create_labeled_entry(frame_home, "饥饿键", config.hunger_btn, lambda v: setattr(config, "hunger_btn", int(v) if v.isdigit() else config.hunger_btn), row)
     max_cast_line_meters_var, max_cast_line_meters_entry, row = create_labeled_entry(frame_home, "出线米数小退", config.max_cast_line_meters, lambda v: setattr(config, "max_cast_line_meters", int(v) if v.isdigit() else config.max_cast_line_meters), row)
-    min_sleep_time_var, min_sleep_time_entry, row = create_labeled_entry(
+    rest_interval_hours_var, rest_interval_hours_entry, row = create_labeled_entry(
     frame_home,
-    "睡眠最小时间(h)",
-    config.min_sleep_time,
-    lambda v: setattr(config, "min_sleep_time", float(v) if v.replace('.', '', 1).isdigit() else config.min_sleep_time),
+    "多久休息一次(h)",
+    config.rest_interval_hours,
+    lambda v: setattr(config, "rest_interval_hours", float(v) if v.replace('.', '', 1).isdigit() else config.rest_interval_hours),
     row
     )
-    max_sleep_time_var, max_sleep_time_entry, row = create_labeled_entry(
+    rest_duration_minutes_var, rest_duration_minutes_entry, row = create_labeled_entry(
     frame_home,
-    "睡眠最大时间(h)",
-    config.max_sleep_time,
-    lambda v: setattr(config, "max_sleep_time", float(v) if v.replace('.', '', 1).isdigit() else config.max_sleep_time),
+    "一次休息多久(min)",
+    config.rest_duration_minutes,
+    lambda v: setattr(config, "rest_duration_minutes", float(v) if v.replace('.', '', 1).isdigit() else config.rest_duration_minutes),
     row
     )
     
@@ -881,11 +881,11 @@ def launch_config_window():
         save_config_to_file()
     chum_the_water_var.trace_add("write", trace_func4)
     
-    is_cut_fish_bottom_lure_var = tk.BooleanVar(value=getattr(config, "is_cut_fish", False))
+    is_cut_fish_bottom_lure_var = tk.BooleanVar(value=getattr(config, "is_cut_fish_bottom_lure", False))
     cb3 = ttk.Checkbutton(checkbox_container, text="是否切鱼肉", variable=is_cut_fish_bottom_lure_var)
     cb3.pack(side="left", padx=2)
     def trace_func3(*args):
-        setattr(config, "is_cut_fish", bool(is_cut_fish_bottom_lure_var.get()))
+        setattr(config, "is_cut_fish_bottom_lure", bool(is_cut_fish_bottom_lure_var.get()))
         save_config_to_file()
     is_cut_fish_bottom_lure_var.trace_add("write", trace_func3)
 

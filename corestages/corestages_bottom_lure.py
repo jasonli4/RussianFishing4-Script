@@ -1475,7 +1475,7 @@ def bottom(meters):
             logger.info("✅ 检测到达标鱼")
             should_keep = True
             # #切鱼肉
-            # if config.is_cut_fish:
+            # if config.is_cut_fish_bottom_lure:
             #     #切达标但不值钱的欧鳊
             #     if (fish_name =="欧鳊" or fish_name=='欧蝙'):
             #         if 500 <= weight < 1000:
@@ -1493,7 +1493,7 @@ def bottom(meters):
             should_keep = True
         else:
             logger.info("❌ 检测不达标的鱼")
-            if config.is_cut_fish:
+            if config.is_cut_fish_bottom_lure:
                 #切鱼肉
                 if 500<=weight<3000:
                     should_keep = True
@@ -1798,7 +1798,7 @@ def lure():
             should_keep = True
         else:
             logger.info("❌ 检测不达标的鱼")
-            if config.is_cut_fish:
+            if config.is_cut_fish_bottom_lure:
                 #切鱼肉
                 if 500<=weight<3000:
                     should_keep = True

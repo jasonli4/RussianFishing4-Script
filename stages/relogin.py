@@ -10,84 +10,62 @@ from ocr_global import ocr
 from stages import navigator
 from logger import logger  # ✅ 添加日志模块
 
-def schedule_next_rest():
-    """生成当天必休的随机休息时间（全天随机）"""
-    now = datetime.datetime.now()
+def init_rest_schedule():
+    """初始化下次休息时间"""
+    now = time.time()
+    config.rest_interval_hours = getattr(config, "rest_interval_hours", 3)  # 每3小时休息一次
+    config.rest_duration_minutes = getattr(config, "rest_duration_minutes", 10)  # 默认休息10分钟
+    config.next_rest_time = now + config.rest_interval_hours * 3600
+    logger.info(
+        f"🕒 已设定 {config.rest_interval_hours} 小时休息一次，每次休息 {config.rest_duration_minutes} 分钟"
+    )
+    show_next_rest_time()
 
-    # 随机生成时间点（全天 0~23 小时，0~59 分钟）
-    rand_hour = random.randint(0, 23)
-    rand_minute = random.randint(0, 59)
-    rest_start = datetime.datetime(now.year, now.month, now.day, rand_hour, rand_minute)
 
-    # 如果随机时间已过 → 调整到未来1分钟内，保证今天能休息
-    if rest_start <= now:
-        rest_start = now + datetime.timedelta(minutes=1)
-
-    # 随机休息时长（秒）
-    rest_duration = random.uniform(config.min_sleep_time, config.max_sleep_time) * 3600
-
-    # 保存配置
-    config.next_rest_time = rest_start.timestamp()
-    config.rest_duration = rest_duration
-    config.rest_done_today = False
-
-    logger.info(f"已设定每日休息时间: {rest_start.strftime('%Y-%m-%d %H:%M')} "
-                f"持续 {rest_duration/3600:.2f} 小时")
+def show_next_rest_time():
+    """打印下次休息时间"""
+    next_rest = datetime.datetime.fromtimestamp(config.next_rest_time)
+    remain = config.next_rest_time - time.time()
+    h, m = divmod(int(remain // 60), 60)
+    logger.info(f"⌛ 下次休息时间: {next_rest.strftime('%Y-%m-%d %H:%M:%S')}（约 {h} 小时 {m} 分钟后）")
 
 
 def check_and_rest():
-    """检查是否需要进入休息"""
+    """检查是否到达休息时间，并执行休息"""
     now = time.time()
-    today = datetime.date.today()
 
-    # 如果还没生成，或跨天 → 重新生成
-    if (config.next_rest_time is None or
-        datetime.datetime.fromtimestamp(config.next_rest_time).date() != today):
-        schedule_next_rest()
+    # 若尚未设定，则初始化
+    if getattr(config, "next_rest_time", None) is None:
+        init_rest_schedule()
 
-    # 如果今天还没休息并且时间已到
-    if not config.rest_done_today and now >= config.next_rest_time:
-        hours = config.rest_duration / 3600
-        logger.info(f"进入每日休息，暂停脚本 {hours:.2f} 小时")
-        
-        # 分段休息，每分钟检查是否中断
+    # 到达休息时间
+    if now >= config.next_rest_time:
+        duration = config.rest_duration_minutes * 60
+        logger.info(f"💤 到达定时休息点，脚本暂停 {config.rest_duration_minutes} 分钟")
+
         elapsed = 0
-        interval = 60  # 秒
-        while elapsed < config.rest_duration:
+        interval = 30  # 每30秒检查一次中断
+        start_time = time.time()
+
+        while elapsed < duration:
             if hasattr(config, "stop_event") and config.stop_event.is_set():
-                logger.info("休息被中断")
+                logger.info("⚠️ 休息被中断，提前恢复脚本运行")
                 break
-            sleep_time(min(interval, config.rest_duration - elapsed))
-            elapsed += interval
+            sleep_time(min(interval, duration - elapsed))
+            elapsed = time.time() - start_time
 
-        logger.info("休息结束，恢复脚本运行")
-        config.rest_done_today = True
+        logger.info("✅ 休息结束，恢复脚本运行")
 
-        # ✅ 自动生成明天的休息时间
-        schedule_next_rest_for_tomorrow()
+        # 安排下次休息
+        config.next_rest_time = time.time() + config.rest_interval_hours * 3600
+        show_next_rest_time()
 
     else:
-        # 每小时打印一次剩余时间，避免刷屏
+        # 每小时提示剩余时间
         remain = config.next_rest_time - now
-        if remain > 0 and remain % 3600 < 60:
+        if remain > 0 and int(remain) % 3600 < 60:
             h, m = divmod(int(remain // 60), 60)
-            logger.info(f"距离每日休息还有 {h} 小时 {m} 分钟")
-
-
-def schedule_next_rest_for_tomorrow():
-    """生成明天的随机休息时间"""
-    tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
-    rand_hour = random.randint(0, 23)
-    rand_minute = random.randint(0, 59)
-    rest_start = datetime.datetime(tomorrow.year, tomorrow.month, tomorrow.day, rand_hour, rand_minute)
-    rest_duration = random.uniform(config.min_sleep_time, config.max_sleep_time) * 3600
-
-    config.next_rest_time = rest_start.timestamp()
-    config.rest_duration = rest_duration
-    config.rest_done_today = False
-
-    logger.info(f"已设定明日休息时间: {rest_start.strftime('%Y-%m-%d %H:%M')} "
-                f"持续 {rest_duration/3600:.2f} 小时")
+            logger.info(f"⌛ 距离下次休息还有 {h} 小时 {m} 分钟")
 
 # ========== 小退操作 ==========
 def relogin():
