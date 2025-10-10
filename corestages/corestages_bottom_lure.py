@@ -1481,6 +1481,7 @@ def bottom(meters):
         region = config.region_fish_name
         is_green = utils.find_template_in_regions(region, 'green.png', confidence=0.95)
         is_yellow = utils.find_template_in_regions(region, 'yellow.png', confidence=0.95)
+        is_yellow1 = utils.find_template_in_regions(region, 'yellow1.png', confidence=0.95)
         is_blue = utils.find_template_in_regions(region, 'blue.png', confidence=0.95)
         logger.debug(f"⏱️ 达标检测耗时: {time.time() - t_color_check:.3f} 秒")
         
@@ -1496,7 +1497,7 @@ def bottom(meters):
             #     if (fish_name =="欧鳊" or fish_name=='欧蝙'):
             #         if 500 <= weight < 1000:
             #             config.cut_fish_type = 3
-        elif is_yellow:
+        elif is_yellow or is_yellow1:
             logger.info("⭐ 检测到达标星鱼")
             utils.press_key('F12')
             sleep_time(random.uniform(1.2, 1.3))
