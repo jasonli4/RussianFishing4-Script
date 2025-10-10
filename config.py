@@ -208,7 +208,7 @@ income = []  # 用于记录每次卖鱼获得的银币数
 auto_change_pit=False
 auto_pits=[]
 current_fish_mode=None
-import time
+last_action = 'down'
 
 # ========== 每日休息相关 ==========
 # 下一次休息的开始时间戳（秒）

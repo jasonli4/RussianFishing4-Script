@@ -1349,6 +1349,7 @@ def bottom(meters):
             # 调整摩擦力
             if config.is_open_lock_unlock:
                 adjust_reel_friction(config.bottom_reel_friction)
+                config.last_action = 'down'
             #抛竿子
             t=1.8*(random.uniform(meters*5+5,meters*5+10)/100)
             utils.click_left_mouse(t)
