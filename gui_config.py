@@ -476,7 +476,7 @@ def launch_config_window():
         # 更新点锁/传动比设置
         open_lock_unlock_alone_var.set(config.open_lock_unlock_alone)
         is_open_lock_unlock_var.set(config.is_open_lock_unlock)
-        min_lock_unlock_value_var.set(str(config.min_lock_unlock_value))
+        # min_lock_unlock_value_var.set(str(config.min_lock_unlock_value))
         max_lock_unlock_value_var.set(str(config.max_lock_unlock_value))
         is_open_gear_ratio_var.set(config.is_open_gear_ratio)
         gear_ratio_var.set(str(config.gear_ratio))
@@ -2553,21 +2553,21 @@ def launch_config_window():
     is_open_lock_unlock_var, row = create_checkbox(frame_lock, "是否开启点锁功能", config.is_open_lock_unlock, is_open_lock_unlock_toggle, row)
 
 
-    # 升摩擦的值
-    def on_lock_value_change_min(v):
-        try:
-            config.min_lock_unlock_value = float(v)
-        except:
-            pass
-        save_config_to_file()
+    # # 升摩擦的值
+    # def on_lock_value_change_min(v):
+    #     try:
+    #         config.min_lock_unlock_value = float(v)
+    #     except:
+    #         pass
+    #     save_config_to_file()
 
-    min_lock_unlock_value_var, min_lock_unlock_value_entry, row = create_labeled_entry(
-        frame_lock,
-        "升摩擦的值(0.0 ~ 1.0)",
-        config.min_lock_unlock_value,
-        on_lock_value_change_min,
-        row
-    )
+    # min_lock_unlock_value_var, min_lock_unlock_value_entry, row = create_labeled_entry(
+    #     frame_lock,
+    #     "升摩擦的值(0.0 ~ 1.0)",
+    #     config.min_lock_unlock_value,
+    #     on_lock_value_change_min,
+    #     row
+    # )
 
     # 降摩擦的值
     def on_lock_value_change_max(v):
