@@ -167,6 +167,8 @@ pyinstaller --clean main_gpu.spec
 
 QQ群：1044761397
 
+喜欢的话，点个star⭐️
+
 ## 贡献与反馈
 
 通过 GitHub Issues 或 Pull Requests 提交问题或建议，提供系统环境、日志和重现步骤。
