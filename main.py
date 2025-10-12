@@ -18,6 +18,7 @@ def monitor_and_restart():
         
         if login_error_match:
             logger.info("检测到登陆错误，准备重新登录。")
+            utils.stop_program()
             time.sleep(random.uniform(0.23, 0.235))
             utils.move_mouse_random_in_region(region=config.ServerLossRegionClick)
             time.sleep(random.uniform(2.23, 3.235))
@@ -58,6 +59,7 @@ def monitor_and_restart():
 
         if serverloss:
             logger.warning("🔁 检测到服务器未响应")
+            utils.stop_program()
             time.sleep(random.uniform(0.23, 0.235))
             utils.move_mouse_random_in_region(region=config.ServerLossRegionClick)
             time.sleep(random.uniform(0.23, 0.235))
@@ -98,6 +100,7 @@ def monitor_and_restart():
 
         if lossgameconnect:
             logger.warning("🔁 检测到服务器失联，立即重启")
+            utils.stop_program()
             time.sleep(random.uniform(0.23, 0.235))
             utils.move_mouse_random_in_region(region=config.LossGameConnectRegionClick)
             time.sleep(random.uniform(0.23, 0.235))
