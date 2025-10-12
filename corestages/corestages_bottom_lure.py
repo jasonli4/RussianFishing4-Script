@@ -759,28 +759,39 @@ def get_game_minutes():
 
 def fish_mode_change():
     """
-    根据 auto_mode 判断是否需要重启，并在游戏时间15:00-15:59重启前等待随机2-3分钟
+    根据 auto_mode 判断是否需要重启：
+    auto_mode 0: 游戏时间 14:30 - 16:30 重启一次
+    auto_mode 1: 游戏时间 22:00 - 24:00 重启一次
+    auto_mode 2: 白天/晚上模式切换
     """
-    # === auto_mode 0 / 1: 游戏时间 15:00 - 16:00 内重启一次 ===
+    try:
+        minutes = parse_game_time(
+            ocr.recognize_text_from_black_bg_first(region=config.GameTimeRegionScreenshotmain)
+        )
+    except ValueError as e:
+        logger.warning("⚠️ OCR 时间解析失败: %s", e)
+        return False
+
+    if minutes is None:
+        logger.debug("OCR 未识别到有效时间，跳过模式检测。")
+        return False
+
+    game_hour, game_minute = divmod(minutes, 60)
+
+    # ===== auto_mode 0 / 1 重启逻辑 =====
     if config.auto_mode in (0, 1):
-        try:
-            minutes = parse_game_time(
-                ocr.recognize_text_from_black_bg_first(region=config.GameTimeRegionScreenshotmain)
-            )
-        except ValueError as e:
-            logger.warning("⚠️ OCR 时间解析失败: %s", e)
-            return False
+        restart = False
+        if config.auto_mode == 0:
+            # 14:30 ~ 16:30
+            if ((game_hour == 14 and game_minute >= 30) or (game_hour == 15) or (game_hour == 16 and game_minute <= 30)):
+                restart = True
+        elif config.auto_mode == 1:
+            # 22:00 ~ 24:00
+            if game_hour >= 22 and game_hour < 24:
+                restart = True
 
-        if minutes is None:
-            logger.debug("OCR 未识别到有效时间，跳过模式检测。")
-            return False
-
-        game_hour, game_minute = divmod(minutes, 60)
-
-        # 如果游戏时间在 14:30~16:30 且今天还没重启过
-        if ((game_hour == 14 and game_minute >= 30) or (game_hour == 15) or (game_hour == 16 and game_minute <= 30)) \
-                and not getattr(config, "has_restarted_today", False):
-            logger.info("⏰ 游戏时间 %02d:%02d 处于 14:30~16:30，准备等待1-5分钟后重启！（auto_mode=%s）",
+        if restart and not getattr(config, "has_restarted_today", False):
+            logger.info("⏰ 游戏时间 %02d:%02d 处于重启区间，准备等待1-5分钟后重启！（auto_mode=%s）",
                         game_hour, game_minute, config.auto_mode)
 
             wait_time = random.uniform(60, 300)  # 1-5 分钟
@@ -793,26 +804,15 @@ def fish_mode_change():
             utils.delayed_start()
             return True
 
-        # 在 16:30 后重置重启标志
-        if game_hour > 16 or (game_hour == 16 and game_minute > 30):
+        # 超过时间段重置标志
+        if (config.auto_mode == 0 and (game_hour > 16 or (game_hour == 16 and game_minute > 30))) \
+                or (config.auto_mode == 1 and game_hour >= 0 and game_hour < 22):
             config.has_restarted_today = False
 
         return False
 
-    # === auto_mode 2: 白天/晚上切换逻辑 ===
+    # ===== auto_mode 2: 白天/晚上切换逻辑 =====
     elif config.auto_mode == 2:
-        try:
-            minutes = parse_game_time(
-                ocr.recognize_text_from_black_bg_first(region=config.GameTimeRegionScreenshotmain)
-            )
-        except ValueError as e:
-            logger.warning("⚠️ OCR 时间解析失败: %s", e)
-            return False
-
-        if minutes is None:
-            logger.debug("OCR 未识别到有效时间，跳过模式检测。")
-            return False
-
         new_mode = "lure" if 540 <= minutes < 1080 else "bottom"
 
         if new_mode != config.current_fish_mode:
@@ -1305,8 +1305,8 @@ def fish_lure():
     sleep_time(random.uniform(0.41, 0.52))
     if config.stop_event.is_set():
         return
-    #设置卡米数
-    adjust_reel_meters(0)
+    # 设置卡米数
+    # adjust_reel_meters(0)
     utils.move_mouse_relative_smooth(0, -620, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
     sleep_time(random.uniform(0.41, 0.52))
     if config.stop_event.is_set():
