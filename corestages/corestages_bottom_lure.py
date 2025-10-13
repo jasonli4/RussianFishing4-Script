@@ -1041,6 +1041,18 @@ def goToMap():
         if not ((mapName=='白河' or mapName=='铜湖') and fish_count>0):
             relogin()
     else:
+        if fish_count and fish_count > 0:
+            #进入菜单页面
+            while not config.stop_event.is_set():
+                """
+                是否在游戏界面
+                """
+                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or navigator.get_current_position():
+                    sleep_time(random.uniform(0.23, 0.24))
+                    utils.press_key('esc')
+                    sleep_time(random.uniform(0.25, 0.26))
+                    break
+                sleep_time(random.uniform(0.4, 0.5))
         #进入地图选择界面
         if config.stop_event.is_set():
             return
