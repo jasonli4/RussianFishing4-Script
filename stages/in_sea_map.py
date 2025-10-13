@@ -62,8 +62,9 @@ def in_sea_map():
     if not config.stop_event.is_set():
         st=time.time()
         while not config.stop_event.is_set() and time.time()-st<5:
-            sea_name = ocr.recognize_text_from_black_bg_first(region=config.MapPickerRegionScreenshotFly if config.is_fly_ticket else config.MapPickerRegionScreenshot)
-            if sea_name and sea_name.strip() == "挪威海":
+            sea_name_fly = ocr.recognize_text_from_black_bg_first(config.MapPickerRegionScreenshotFly)
+            sea_name = ocr.recognize_text_from_black_bg_first(config.MapPickerRegionScreenshot)
+            if (sea_name and sea_name.strip() == "挪威海") or (sea_name_fly and sea_name_fly.strip() == "挪威海"):
                 logger.info("✅ 当前已在海图界面。")
                 return
             sleep_time(random.uniform(0.4, 0.5))    
