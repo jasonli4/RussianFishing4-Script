@@ -933,7 +933,7 @@ def launch_config_window():
     )
 
       # bottom_map_options = {"旧奥斯特罗格湖": 0, "琥珀湖": 1, "铜湖": 2}
-    bottom_map_options = {"旧奥斯特罗格湖": 0, "铜湖": 2,"惟有诺克河-梅花鲈":4}
+    bottom_map_options = {"旧奥斯特罗格湖": 0,"琥珀湖": 1,"阿赫图巴河": 2,"铜湖":3,"惟有诺克河-梅花鲈":4}
 
     def get_bottom_map_text(val):
         for k, v in bottom_map_options.items():
@@ -1710,9 +1710,9 @@ def launch_config_window():
                 "normal" if is_bottom_mode and config.bottom_map == 0 else "disabled")
         set_state(hupo_entries, hupo_bait_entries, hupo_meters_entries, hupo_id_selectors, hupo_add_button,
                 "normal" if is_bottom_mode and config.bottom_map == 1 else "disabled")
-        set_state(tonghu_entries, tonghu_bait_entries, tonghu_meters_entries, tonghu_id_selectors, tonghu_add_button,
-                "normal" if is_bottom_mode and config.bottom_map == 2 else "disabled")
         set_state(ahetubahe_entries, ahetubahe_bait_entries, ahetubahe_meters_entries, ahetubahe_id_selectors, ahetubahe_add_button,
+                "normal" if is_bottom_mode and config.bottom_map == 2 else "disabled")
+        set_state(tonghu_entries, tonghu_bait_entries, tonghu_meters_entries, tonghu_id_selectors, tonghu_add_button,
                 "normal" if is_bottom_mode and config.bottom_map == 3 else "disabled")
         set_state(weiyounuoke_mhl_entries, [], weiyounuoke_mhl_meters_entries, weiyounuoke_mhl_id_selectors, weiyounuoke_mhl_add_button,
                 "normal" if is_bottom_mode and config.bottom_map == 4 else "disabled")        
@@ -1730,9 +1730,9 @@ def launch_config_window():
             elif config.bottom_map == 1:
                 show_container(hupo_container, hupo_add_button, hupo_container_row)
             elif config.bottom_map == 2:
-                show_container(tonghu_container, tonghu_add_button, tonghu_container_row)
-            elif config.bottom_map == 3:
                 show_container(ahetubahe_container, ahetubahe_add_button, ahetubahe_container_row)
+            elif config.bottom_map == 3:
+                show_container(tonghu_container, tonghu_add_button, tonghu_container_row)
             elif config.bottom_map == 4:
                 show_container(weiyounuoke_mhl_container, weiyounuoke_mhl_add_button, weiyounuoke_mhl_container_row)
 
@@ -1887,7 +1887,7 @@ def launch_config_window():
             point_selector = ttk.Combobox(
                 group_frame,
                 textvariable=point_var,
-                values=[p for p in ["7137", "6628", "6526", "7345", "7359"] if p not in [pt['point_id'] for pt in config.baihe_lure_points if pt != point]],
+                values=[p for p in baihe_available_points if p not in [pt['point_id'] for pt in config.baihe_lure_points if pt != point]],
                 state="readonly",
                 width=12,
                 font=("Microsoft YaHei", 8)
@@ -1907,7 +1907,7 @@ def launch_config_window():
     def add_baihe_point():
         if len(config.baihe_lure_points) < 3:
             used_points = [p["point_id"] for p in config.baihe_lure_points]
-            available_points = ["7137", "6628", "6526", "7345", "7359"]
+            available_points = baihe_available_points
             for point_id in available_points:
                 if point_id not in used_points:
                     config.baihe_lure_points.append({"point_id": point_id})
@@ -2037,7 +2037,7 @@ def launch_config_window():
         else:
             aier_add_button.config(state="normal")
 
-    # 刷新白河点位下拉框
+    # 刷新埃尔克湖点位下拉框
     render_aier_points()
     update_aier_add_button_state()
 

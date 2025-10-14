@@ -110,12 +110,13 @@ lure_reel_speed=25
 lure_reel_friction=23
 #放下竿子的按键
 put_down_rod_key='x'
-#点位
+#水底地图点位
 laoao_points=[]
 hupo_points=[]
 ahetubahe_points=[]
 tonghu_points=[]
 weiyounuoke_mhl_points=[]
+#路亚地图点位
 baihe_lure_points=[]
 aier_lure_points=[]
 
@@ -124,9 +125,9 @@ aier_lure_points=[]
 lure_rod_name='S68ML'
 #自动模式：0为全天水底，1为全天路亚，2为白天路亚，晚上水底,3为只有水底，4为只有路亚
 auto_mode=3
-#水底的地图：0为旧奥斯特罗格湖，1为琥珀湖，2铜湖，3阿赫图巴河
+#水底的地图：0为旧奥斯特罗格湖，1为琥珀湖，2为阿赫图巴河，3为铜湖，4为惟有诺克河-梅花鲈
 bottom_map=0
-#路亚的地图：0为旧奥斯特罗格湖，1为白河,2为埃尔克湖
+#路亚的地图：1为白河,2为埃尔克湖
 lure_map=1
 #auto_mode为3的时候的卡米数
 only_bottom_meters=10
@@ -244,6 +245,7 @@ MapPickerRegionScreenshotClick=(971,426,378,48)#选择地图的入口
 LaoaoMapPickerRegionScreenshotClick=(843,619,234,128)#老奥地图入口
 BaiheMapPickerRegionScreenshotClick=(1097,619,234,128)#白河地图入口
 HupohuMapPickerRegionScreenshotClick=(1097,769,234,128)#琥珀湖地图入口
+AhetubaheMapPickerRegionScreenshotClick=(1605,769,234,128)#阿赫图巴河地图入口
 TonghuMapPickerRegionScreenshotClick=(81,919,234,128)#铜湖地图入口
 
 AierMapPickerRegionScreenshotClick=(335,619,234,128)#埃尔克湖地图入口

@@ -414,6 +414,8 @@ def bottom_next_position():
     elif config.bottom_map==1:
         positions=config.hupo_points
     elif config.bottom_map==2:
+        positions=config.ahetubahe_points    
+    elif config.bottom_map==3:
         positions=config.tonghu_points 
     elif config.bottom_map==4:
         positions=config.weiyounuoke_mhl_points          
@@ -451,134 +453,6 @@ def bottom_next_position():
     logger.info(f"已更新 config.bottom_last_position_index = {next_index}, 卡米数={meters}")
 
     return int(meters)
-
-#打狗线路
-def dagou_path():
-
-    #先去2167
-    # 向左转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(-100, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向前走
-    sleep_time(random.uniform(0.23, 0.33))
-    utils.key_down('Left Shift')
-    utils.key_down('w')
-    sleep_time(7)
-    utils.key_up('w')
-    utils.key_up('Left Shift')
-
-    # 向左转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(100, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向前走
-    sleep_time(random.uniform(0.23, 0.33))
-    utils.key_down('Left Shift')
-    utils.key_down('w')
-    sleep_time(4.2)
-    utils.key_up('w')
-    utils.key_up('Left Shift')
-
-    # 向左转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(-550, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向前走
-    sleep_time(random.uniform(0.23, 0.33))
-    utils.key_down('Left Shift')
-    utils.key_down('w')
-    sleep_time(23)
-    utils.key_up('w')
-    utils.key_up('Left Shift')
-
-    # 向左转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(-700, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向前走
-    sleep_time(random.uniform(0.23, 0.33))
-    utils.key_down('Left Shift')
-    utils.key_down('w')
-    sleep_time(2.5)
-    utils.key_up('w')
-    utils.key_up('Left Shift')
-
-    # 向右转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(220, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向左转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(-1120, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向前走
-    sleep_time(random.uniform(0.23, 0.33))
-    utils.key_down('Left Shift')
-    utils.key_down('w')
-    sleep_time(5)
-    utils.key_up('w')
-    utils.key_up('Left Shift')
-
-    # 向右转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(320, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向前走
-    sleep_time(random.uniform(0.23, 0.33))
-    utils.key_down('Left Shift')
-    utils.key_down('w')
-    sleep_time(2.5)
-    utils.key_up('w')
-    utils.key_up('Left Shift')
-
-    # 向左转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(-220, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向前走
-    sleep_time(random.uniform(0.23, 0.33))
-    utils.key_down('Left Shift')
-    utils.key_down('w')
-    sleep_time(6)
-    utils.key_up('w')
-    utils.key_up('Left Shift')
-
-      # 向右转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(190, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向前走
-    sleep_time(random.uniform(0.23, 0.33))
-    utils.key_down('Left Shift')
-    utils.key_down('w')
-    sleep_time(6)
-    utils.key_up('w')
-    utils.key_up('Left Shift')
-
-     # 向左转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(-280, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向前走
-    sleep_time(random.uniform(0.23, 0.33))
-    utils.key_down('Left Shift')
-    utils.key_down('w')
-    sleep_time(13)
-    utils.key_up('w')
-    utils.key_up('Left Shift')
-
-     # 向右转
-    sleep_time(random.uniform(0.52, 0.65))
-    utils.move_mouse_relative_smooth(230, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-
-    # 向前走
-    sleep_time(random.uniform(0.23, 0.33))
-    utils.key_down('Left Shift')
-    utils.key_down('w')
-    sleep_time(0.5)
-    utils.key_up('w')
-    utils.key_up('Left Shift')
 
 #惟有诺克河点位
 def position_99_121 ():
@@ -878,6 +752,9 @@ def goToMap():
             mapName='琥珀湖'
             region=config.HupohuMapPickerRegionScreenshotClick
         elif config.bottom_map==2:
+            mapName='埃赫图巴河'        
+            region=config.AhetubaheMapPickerRegionScreenshotClick    
+        elif config.bottom_map==3:
             mapName='铜湖'        
             region=config.TonghuMapPickerRegionScreenshotClick
         elif config.bottom_map==4:
@@ -1149,9 +1026,17 @@ def fish_bottom():
     baits=[]
     if config.bottom_map==0:
         item=config.laoao_points[config.bottom_last_position_index]
+    if config.bottom_map==1:
+        item=config.hupo_points[config.bottom_last_position_index]
+        baits=item["baits"]
     if config.bottom_map==2:
+        item=config.ahetubahe_points[config.bottom_last_position_index]
+        baits=item["baits"]
+    if config.bottom_map==3:
         item=config.tonghu_points[config.bottom_last_position_index]
         baits=item["baits"]
+    if config.bottom_map==4:
+        item=config.weiyounuoke_mhl_points[config.bottom_last_position_index]
 
     #依次拿起竿子1，2，3
     for num in [1, 2, 3]:  # 竿子编号
@@ -1178,7 +1063,7 @@ def fish_bottom():
         adjust_reel_meters(meters)
         utils.move_mouse_relative_smooth(0, -620, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
         sleep_time(random.uniform(0.41, 0.52))
-        if config.bottom_map==2:
+        if config.bottom_map in [1, 2, 3]:
             #设置饵料
             #打开鱼竿配置界面
             if config.stop_event.is_set():
