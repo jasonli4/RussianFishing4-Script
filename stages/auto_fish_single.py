@@ -1035,7 +1035,7 @@ def auto_fish_single():
 
     # 拿出鱼竿
     # if config.is_fly_ticket:
-    if config.is_fly_ticket and config.is_fly_rod:
+    if config.is_fly_ticket and config.is_fly_rod and config.need_back:
         sleep_time(random.uniform(0.42, 0.52))
         utils.key_down('U')
         sleep_time(random.uniform(0.42, 0.52))
