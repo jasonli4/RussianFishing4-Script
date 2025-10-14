@@ -441,7 +441,8 @@ def bottom_next_position():
         config.need_restart_sign=False
 
     item=positions[next_index]
-    func=f"position_{item['point_id'][:2]}_{item['point_id'][2:]}"
+    a, b = item["point_id"].split(",")
+    func = f"position_{a}_{b}"
     func=getattr(sys.modules[__name__], func)
     meters=item["meters"]
 
@@ -587,8 +588,9 @@ def lure_next_position():
         config.need_restart_sign=False
 
     item=positions[next_index]
-    func=f"position_{item['point_id'][:2]}_{item['point_id'][2:]}"
-    func=getattr(sys.modules[__name__], func)
+    a, b = item["point_id"].split(",")
+    func = f"position_{a}_{b}"
+    func = getattr(sys.modules[__name__], func)
     # meters=item["meters"]
 
     # 调用函数

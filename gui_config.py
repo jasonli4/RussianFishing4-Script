@@ -952,14 +952,14 @@ def launch_config_window():
 
     #点位变量
     #水底
-    laoao_available_points = ["4828", "2367", "2541", "4232", "3628", "3529","2034","3558","2345","0950","2727", "6759_laoao","2754"]  # 老奥点位
-    tonghu_available_points = ["6655", "5650", "6759", "3732", "4434", "6758", "6659"]  # 铜湖点位
+    laoao_available_points = ["48,28", "23,67", "25,41", "42,32", "36,28", "35,29","20,34","35,58","23,45","09,50","27,27", "67,59_laoao","27,54"]  # 老奥点位
+    tonghu_available_points = ["66,55", "56,50", "67,59", "37,32", "44,34", "67,58", "66,59"]  # 铜湖点位
     hupo_available_points = []  # 琥珀湖点位
     ahetubahe_available_points = []  # 阿赫图巴赫点位
-    weiyounuoke_mhl_available_points = ["99121"]
+    weiyounuoke_mhl_available_points = ["99,121"] # 惟有诺克河-梅花鲈点位
     #路亚
-    baihe_available_points = ["7137", "6628", "6526", "7345", "7359"]  # 白河点位
-    aier_available_points = ["6593"]  # 艾尔克湖点位
+    baihe_available_points = ["71,37", "66,28", "65,26", "73,45", "73,59"]  # 白河点位
+    aier_available_points = ["65,93"]  # 艾尔克湖点位
 
     tonghu_entries = []
     tonghu_bait_entries = []
