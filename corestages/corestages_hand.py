@@ -169,7 +169,6 @@ def goToMap():
     #查看是不是在指定的地图中
     map_name1 = ocr.recognize_text_from_black_bg_first(region=config.MapPickerRegionScreenshotFly)
     map_name2 = ocr.recognize_text_from_black_bg_first(region=config.MapPickerRegionScreenshot)
-    print(map_name1, map_name2)
     if (map_name1 and mapName in map_name1.replace(" ", "") ) or (map_name2 and mapName in map_name2.replace(" ", "")) :
         logger.info("✅ 当前已在指定地图中。")
         #小退游戏还原状态
@@ -449,13 +448,13 @@ def shougan():
             nonlocal total_mouse_movement
             # 还原视角：将鼠标移动回初始位置
             if total_mouse_movement != 0:
-                print("正在还原视角...")
+                logger.info("正在还原视角...")
                 utils.move_mouse_relative_smooth(
                     -total_mouse_movement, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50),
                     interrupt_checker=lambda: getattr(config, 'running', True)
                 )
                 total_mouse_movement = 0
-                print("视角已还原")
+                logger.info("视角已还原")
             sleep_time(random.uniform(0.41, 0.52))
             t=1.8*(random.uniform(config.hand_rod_power,config.hand_rod_power+5)/100)
             utils.click_left_mouse(t)
@@ -519,7 +518,7 @@ def shougan():
 
         # === 新增：视角移动线程 ===
         def move_task():
-            print("视角移动线程启动")
+            # logger.info("视角移动线程启动")
             nonlocal total_mouse_movement
             for _ in range(2):  # 总共移动两次
                 if config.stop_event.is_set() or move_stop_event.is_set():
@@ -530,7 +529,7 @@ def shougan():
                         return
                     time.sleep(0.1)
                 if not config.stop_event.is_set() and not move_stop_event.is_set():
-                    print("视角移动中...")
+                    logger.info("视角移动中...")
                     utils.move_mouse_relative_smooth(400, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
                     total_mouse_movement += 400  # 记录移动距离
 
@@ -542,7 +541,7 @@ def shougan():
             while not config.stop_event.is_set():
                 inner_elapsed = time.time() - start_time
                 if inner_elapsed >= inner_timeout:
-                    print("漂流检测超时，重新抛竿")
+                    logger.info("漂流检测超时，重新抛竿")
                     return True
                 screenshot=None
                 # screenshot = dxgi.grab_region(config.region_hand_rod_bite)

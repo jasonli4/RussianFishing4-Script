@@ -11,11 +11,9 @@ def get_resource_path(relative_path):
     return os.path.join(base_dir, relative_path)
 
 # 加载 DLL
-dll_path = get_resource_path("Dll1.dll")
+dll_path = get_resource_path("dxgi_capture.dll")
 dxgi = ctypes.CDLL(dll_path)
 
-# dll_path = os.path.abspath("Dll1.dll")
-# dxgi = ctypes.WinDLL(dll_path)
 
 # 函数签名定义
 dxgi.InitDuplicator.restype = c_bool

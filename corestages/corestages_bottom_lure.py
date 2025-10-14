@@ -1045,7 +1045,7 @@ def fish_bottom():
         if config.stop_event.is_set():
             return
         utils.press_key(num)
-        print(f"🎣 已拿起鱼竿 {num}")
+        logger.info(f"🎣 已拿起鱼竿 {num}")
         if num==1:
             sleep_time(random.uniform(2.41, 2.52))
         else:

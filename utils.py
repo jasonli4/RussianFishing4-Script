@@ -1271,7 +1271,7 @@ def restart_game():
             if hwnd:
                 win32gui.SetForegroundWindow(hwnd)              # 置于前台
             else:
-                print(f"未找到标题为 '{config.TARGET_WINDOW_TITLE}' 的窗口")
+                logger.warning(f"未找到标题为 '{config.TARGET_WINDOW_TITLE}' 的窗口")
 
             # 等待出现重新登录界面
             while not config.stop_event.is_set():

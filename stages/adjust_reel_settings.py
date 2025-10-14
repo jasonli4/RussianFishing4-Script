@@ -120,7 +120,6 @@ def adjust_reel_meters(meters=10):
     current_value = None
     for _ in range(10):  # OCR尝试多次提高成功率
         f = ocr.recognize_text_from_black_bg_first(config.region_adjust_reel_settings_meters_area, min_confidence=0.2,scale=1.0,is_preprocess=False).replace('.','')
-        print(f)
         if f and f.isdigit():
             current_value = int(f)
             break
