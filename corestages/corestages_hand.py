@@ -13,7 +13,7 @@ from stages.relogin import relogin
 from stages.sell_fish import sell_fish_func
 import utils
 from utils import sleep_time, stop_program
-from ocr_global import ocr
+from ocr.ocr_global import ocr
 import threading
 
 def turn_and_walk(turn_value, walk_time, sleep_min=0.23, sleep_max=0.33):

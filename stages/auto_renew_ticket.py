@@ -4,7 +4,7 @@ import pyautogui
 import config
 import utils
 from utils import sleep_time
-from ocr_global import ocr
+from ocr.ocr_global import ocr
 
 
 from logger import logger

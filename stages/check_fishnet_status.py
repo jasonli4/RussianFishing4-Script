@@ -2,7 +2,7 @@ import random
 import time
 import config
 from utils import sleep_time,press_key
-from ocr_global import ocr
+from ocr.ocr_global import ocr
 from logger import logger  # 确保导入
 
 #检查鱼护数量

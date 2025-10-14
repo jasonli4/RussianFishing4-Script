@@ -6,7 +6,7 @@ import datetime
 import config
 import utils
 from utils import sleep_time, stop_program
-from ocr_global import ocr
+from ocr.ocr_global import ocr
 from stages import navigator
 from logger import logger  # ✅ 添加日志模块
 

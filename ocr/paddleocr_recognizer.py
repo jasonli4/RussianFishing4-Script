@@ -6,8 +6,8 @@ import numpy as np
 import re
 from typing import Optional, Tuple, List
 from paddleocr import PaddleOCR
-import dxgi
 from logger import logger
+from dxgi import dxgi
 
 def get_resource_path(relative_path):
     base_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))

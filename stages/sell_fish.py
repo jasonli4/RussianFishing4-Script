@@ -3,7 +3,7 @@ import config
 import re
 import utils
 from utils import sleep_time
-from ocr_global import ocr
+from ocr.ocr_global import ocr
 #自动卖鱼
 def sell_fish():
     """

@@ -14,8 +14,8 @@ from utils import sleep_time, stop_program,start_daemon_thread
 from stages.adjust_reel_settings import adjust_reel_friction,adjust_reel_meters,adjust_reel_speed
 from stages.check_player_vitals import check_player_vitals
 from stages.set_friction_from_slider import set_friction_from_slider
-from ocr_global import ocr
-import dxgi
+from ocr.ocr_global import ocr
+from dxgi import dxgi
 import tkinter as tk
 from tkinter import messagebox
 import re

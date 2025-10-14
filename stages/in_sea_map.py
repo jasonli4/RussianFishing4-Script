@@ -3,7 +3,7 @@ import random
 import config
 import utils
 from utils import sleep_time, stop_program
-from ocr_global import ocr
+from ocr.ocr_global import ocr
 from stages.check_fishnet_status import get_fish_count
 from stages.check_assembly import check_assembly
 from stages.check_fishnet_status import get_fish_count

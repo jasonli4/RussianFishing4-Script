@@ -6,7 +6,7 @@ import config
 import pyperclip
 import utils
 from utils import sleep_time, start_daemon_thread
-from ocr_global import ocr
+from ocr.ocr_global import ocr
 from stages.check_assembly import check_assembly
 from stages.adjust_reel_settings import adjust_reel_friction, adjust_reel_settings,adjust_reel_speed
 from stages.check_fishnet_status import check_fishnet_status

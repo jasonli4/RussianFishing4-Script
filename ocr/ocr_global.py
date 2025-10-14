@@ -6,7 +6,7 @@ os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from paddleocr_recognizer import PaddleocrRecognizer
+from ocr.paddleocr_recognizer import PaddleocrRecognizer
 
 DEFAULT_REGION = (1754, 975, 78, 28)
 MAX_WORKERS = 4

@@ -10,10 +10,12 @@ import threading
 import pyautogui
 import config
 import re
+import sys
 from collections import Counter, deque
 from PIL import Image
 import win32api
 import win32con
+from dxgi import dxgi
 from logger import logger
 
 # ------------------ 通过 SendInput 实现模拟键盘和鼠标 ------------------
@@ -563,8 +565,6 @@ def move_mouse_relative_smooth(
         time.sleep(duration - elapsed)
 
 # ------------------ 模板匹配函数 ------------------
-import dxgi
-import sys
 
 def get_resource_path(relative_path):
     base_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
@@ -1075,7 +1075,7 @@ def start_program(main_func):
 
     # 启动 OCR（可选）
     try:
-        from ocr_global import ocr
+        from ocr.ocr_global import ocr
         ocr.recognize_coordinate_once()
     except Exception as e:
         logger.exception("❌ OCR 初始化失败")
@@ -1110,7 +1110,7 @@ def stop_program():
 
     # # 停 OCR 线程池
     # try:
-    #     from ocr_global import ocr
+    #     from ocr.ocr_global import ocr
     #     if ocr:
     #         ocr.shutdown()
     # except Exception as e:
@@ -1354,7 +1354,7 @@ def switch_to_next_auto_pit():
     logger.warning("❌ 没有找到可用的有效坑位。")
 
 
-from ocr_global import ocr
+from ocr.ocr_global import ocr
 def get_current_position():
     st=time.time()
     while not config.stop_event.is_set() and time.time()-st<3:

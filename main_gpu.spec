@@ -33,7 +33,7 @@ if os.path.exists(images_path):
     datas.append((images_path, 'images'))
 
 # === 加入 weights 文件夹（全部模板） ===
-weights_path = os.path.join(base_dir, 'weights')
+weights_path = os.path.join(base_dir, 'ocr', 'weights')
 if os.path.exists(weights_path):
     datas.append((weights_path, 'weights'))        
 
@@ -84,7 +84,7 @@ for dll_name in cublas_dlls:
         print("⚠️ 没找到 cuBLAS DLL:", dll_path)
 
 # === 4.（自定义 DLL） ===
-dll_path  =os.path.join(base_dir, 'dxgi_capture.dll')
+dll_path  =os.path.join(base_dir, 'dxgi','dxgi_capture.dll')
 if os.path.exists(dll_path):
     binaries.append((dll_path, '.'))
 
