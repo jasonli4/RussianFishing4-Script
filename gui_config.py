@@ -705,13 +705,13 @@ def launch_config_window():
 
     hand_rod_fishing_mode_map = {
         "全天手杆-自动卖鱼-换点": 1,
-        "只有手杆": 2,
+        "仅手杆": 2,
     }
     def get_hand_rod_fishing_mode_text(val):
         for k, v in hand_rod_fishing_mode_map.items():
             if v == val:
                 return k
-        return "只有手杆"
+        return "仅手杆"
 
     hand_rod_fishing_mode_var, hand_rod_fishing_mode_combo, row = create_labeled_combobox(
         frame_fishing_hand,
@@ -838,14 +838,14 @@ def launch_config_window():
         "全天水底-换点-卖鱼": 0,
         "全天路亚-换点-卖鱼": 1,
         "白天路亚，晚上水底-换点-卖鱼": 2,
-        "只有水底": 3,
-        "只有路亚": 4
+        "仅水底": 3,
+        "仅路亚": 4
     }
     def get_auto_mode_text(val):
         for k, v in auto_mode_map.items():
             if v == val:
                 return k
-        return "只有水底"
+        return "仅水底"
 
     auto_mode_var, auto_mode_combo, row = create_labeled_combobox(
         frame_fishing_params,
