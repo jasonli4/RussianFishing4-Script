@@ -58,9 +58,9 @@ for dll_name in paddle_dlls:
         print("⚠️ 没找到 Paddle DLL:", dll_path)
 
 # === 加入自定义 DLL ===
-dll1_path = os.path.join(base_dir, 'Dll1.dll')
-if os.path.exists(dll1_path):
-    binaries.append((dll1_path, '.'))
+dll_path  =os.path.join(base_dir, 'dxgi_capture.dll')
+if os.path.exists(dll_path):
+    binaries.append((dll_path, '.'))
 
 a = Analysis(
     ['main.py'],
