@@ -47,6 +47,7 @@ def save_config_to_file():
         "fish_block_types1": config.fish_block_types1,
         "fish_block_types2": config.fish_block_types2,
         "is_fly_ticket": config.is_fly_ticket,
+        "is_fly_rod": config.is_fly_rod,
         "is_MN": config.is_MN,
         "is_trolling_mode": config.is_trolling_mode,
         "direction": config.direction,
@@ -142,6 +143,7 @@ def load_config_from_file():
         config.fish_block_types1 = data.get("fish_block_types1", config.fish_block_types1)
         config.fish_block_types2 = data.get("fish_block_types2", config.fish_block_types2)
         config.is_fly_ticket = data.get("is_fly_ticket", config.is_fly_ticket)
+        config.is_fly_rod = data.get("is_fly_rod", config.is_fly_rod)
         config.is_MN = data.get("is_MN", config.is_MN)
         config.is_trolling_mode = data.get("is_trolling_mode", config.is_trolling_mode)
         config.direction = data.get("direction", config.direction)
@@ -441,6 +443,7 @@ def launch_config_window():
         x_var.set(str(config.destination[0]))
         y_var.set(str(config.destination[1]))
         dist_var.set(str(config.dist))
+        cast_line_meters_var.set(str(config.cast_line_meters))
         auto_var.set(config.auto_change_pit)
         for i in range(5):
             auto_x_vars[i].set(str(config.auto_pits[i][0]) if i < len(config.auto_pits) else "0")
@@ -459,12 +462,13 @@ def launch_config_window():
         status_click_var.set(str(config.status_click))
         reeling_time_after_status_detected_var.set(str(config.reeling_time_after_status_detected))
         sleep_when_on_status_var.set(str(config.sleep_when_on_status))
-        cast_line_meters_var.set(str(config.cast_line_meters))
+        # cast_line_meters_var.set(str(config.cast_line_meters))
         is_cut_fish_var.set(config.is_cut_fish)
         is_cut_low_quality_fish_var.set(config.is_cut_low_quality_fish)
         fish_block_types1_var.set(get_fish_block_types1_text(config.fish_block_types1))
         fish_block_types2_var.set(get_fish_block_types2_text(config.fish_block_types2))
         is_fly_ticket_var.set(config.is_fly_ticket)
+        is_fly_rod_var.set(config.is_fly_rod)
 
         # 更新拖钓设置
         is_trolling_var.set(config.is_trolling_mode)
@@ -2056,13 +2060,13 @@ def launch_config_window():
     row = 0
 
     predefined_pits = {
-        "34坑": (469, 337, 32),
-        "30坑": (367, 454, 18),
-        "41坑": (307, 173, 45),
-        "55坑": (742, 385, 30),
-        "75坑": (784, 627, 40),
-        "80坑": (656, 209, 30),
-        "120坑": (426, 218, 40),
+        "34坑": (469, 337, 32, 0),
+        "30坑": (367, 454, 18, 0),
+        "41坑": (307, 173, 45, 0),
+        "55坑": (742, 385, 30, 0),
+        "75坑": (784, 627, 40, 0),
+        "80坑": (656, 209, 30, 0),
+        "120坑": (426, 218, 40, 0),
     }
 
     # Assume config has these new attributes
@@ -2092,6 +2096,7 @@ def launch_config_window():
         x_entry.config(state=state)
         y_entry.config(state=state)
         dist_entry.config(state=state)
+        cast_line_meters_entry.config(state=state)
         
         auto_state = "normal" if auto_var.get() else "disabled"
         for i in range(5):
@@ -2103,12 +2108,14 @@ def launch_config_window():
     # Original single pit settings
     def on_pit_select(value):
         if value in predefined_pits:
-            x, y, d = predefined_pits[value]
+            x, y, d, c = predefined_pits[value]
             config.destination = (x, y)
             config.dist = d
+            config.cast_line_meters = c
             x_var.set(str(x))
             y_var.set(str(y))
             dist_var.set(str(d))
+            cast_line_meters_var.set(str(config.cast_line_meters))
         save_config_to_file()
 
     def on_x_change(v):
@@ -2131,6 +2138,14 @@ def launch_config_window():
         try:
             d = int(v)
             config.dist = d
+        except:
+            pass
+        save_config_to_file()
+
+    def on_cast_line_meters_change(v):
+        try:
+            d = int(v)
+            config.cast_line_meters = d
         except:
             pass
         save_config_to_file()
@@ -2160,10 +2175,17 @@ def launch_config_window():
     row += 1
 
     dist_var = tk.StringVar(value=str(config.dist))
-    ttk.Label(frame_select_pit, text="回坑最大距离").grid(row=row, column=0, sticky="w", pady=2, padx=2)
+    ttk.Label(frame_select_pit, text="回坑距离").grid(row=row, column=0, sticky="w", pady=2, padx=2)
     dist_entry = ttk.Entry(frame_select_pit, textvariable=dist_var, width=22,font=("Microsoft YaHei", 8))
     dist_entry.grid(row=row, column=1, sticky="w", padx=2)
     dist_var.trace_add("write", lambda *_, v=dist_var: on_dist_change(v.get()))
+    row += 1
+
+    cast_line_meters_var = tk.StringVar(value=str(config.cast_line_meters))
+    ttk.Label(frame_select_pit, text="卡米数").grid(row=row, column=0, sticky="w", pady=2, padx=2)
+    cast_line_meters_entry = ttk.Entry(frame_select_pit, textvariable=cast_line_meters_var, width=22,font=("Microsoft YaHei", 8))
+    cast_line_meters_entry.grid(row=row, column=1, sticky="w", padx=2)
+    cast_line_meters_var.trace_add("write", lambda *_, v=cast_line_meters_var: on_cast_line_meters_change(v.get()))
     row += 1
 
 
@@ -2392,10 +2414,10 @@ def launch_config_window():
         entry_sleep.config(state="disabled")
         entry_click.config(state="disabled")
 
-    cast_line_meters_var, cast_line_meters_entry, row = create_labeled_entry(frame_params, "卡米距离", config.cast_line_meters, lambda v: setattr(config, "cast_line_meters", int(v) if v.isdigit() else config.cast_line_meters), row)
+    # cast_line_meters_var, cast_line_meters_entry, row = create_labeled_entry(frame_params, "卡米距离", config.cast_line_meters, lambda v: setattr(config, "cast_line_meters", int(v) if v.isdigit() else config.cast_line_meters), row)
     # max_cast_line_meters_var, row = create_labeled_entry(frame_params, "出线米数小退", config.max_cast_line_meters, lambda v: setattr(config, "max_cast_line_meters", int(v) if v.isdigit() else config.max_cast_line_meters), row)
 
-    fish_block_types1_map = {
+    fish_block_types_map = {
         "小块": 1,
         "鱼柳": 2,
         "大块": 3,
@@ -2403,20 +2425,13 @@ def launch_config_window():
     }
 
     def get_fish_block_types1_text(num):
-        for k, v in fish_block_types1_map.items():
+        for k, v in fish_block_types_map.items():
             if v == num:
                 return k
         return "鱼柳"
 
-    fish_block_types2_map = {
-        "小块": 1,
-        "鱼柳": 2,
-        "大块": 3,
-        "巨大": 4,
-    }
-
     def get_fish_block_types2_text(num):
-        for k, v in fish_block_types2_map.items():
+        for k, v in fish_block_types_map.items():
             if v == num:
                 return k
         return "鱼柳"
@@ -2457,25 +2472,46 @@ def launch_config_window():
     fish_block_types1_var, fish_block_types1_combo, row = create_labeled_combobox(
         frame_params,
         "绿青鳕鱼块",
-        list(fish_block_types1_map.keys()),
+        list(fish_block_types_map.keys()),
         get_fish_block_types1_text(config.fish_block_types1),
-        lambda v: setattr(config, "fish_block_types1", fish_block_types1_map.get(v, 2)),
+        lambda v: setattr(config, "fish_block_types1", fish_block_types_map.get(v, 2)),
         row
     )
     fish_block_types2_var, fish_block_types2_combo, row = create_labeled_combobox(
         frame_params,
         "鲭鱼块",
-        list(fish_block_types2_map.keys()),
+        list(fish_block_types_map.keys()),
         get_fish_block_types2_text(config.fish_block_types2),
-        lambda v: setattr(config, "fish_block_types2", fish_block_types2_map.get(v, 2)),
+        lambda v: setattr(config, "fish_block_types2", fish_block_types_map.get(v, 2)),
         row
     )
 
-    is_fly_ticket_var, row = create_checkbox(frame_params, "是否为飞机票", config.is_fly_ticket, lambda v: setattr(config, "is_fly_ticket", bool(v)), row)
+    # 创建一个横向的容器
+    fly_frame = ttk.Frame(frame_params)
+    fly_frame.grid(row=row, column=0, columnspan=2, sticky="w", pady=2)
 
-    state_init = "readonly" if config.is_cut_fish else "disabled"
-    fish_block_types1_combo.config(state=state_init)
-    fish_block_types2_combo.config(state=state_init)
+    # 是否为飞机票
+    is_fly_ticket_var = tk.BooleanVar(value=getattr(config, "is_fly_ticket", False))
+    cb_fly_ticket = ttk.Checkbutton(fly_frame, text="是否为飞机票", variable=is_fly_ticket_var)
+    cb_fly_ticket.pack(side="left", padx=4)
+    def trace_fly_ticket(*args):
+        setattr(config, "is_fly_ticket", bool(is_fly_ticket_var.get()))
+        # 同步控制是否使用飞机杆的可用状态
+        state = "normal" if is_fly_ticket_var.get() else "disabled"
+        cb_fly_rod.config(state=state)
+        save_config_to_file()
+    is_fly_ticket_var.trace_add("write", trace_fly_ticket)
+
+    # 是否使用飞机杆
+    is_fly_rod_var = tk.BooleanVar(value=getattr(config, "is_fly_rod", False))
+    cb_fly_rod = ttk.Checkbutton(fly_frame, text="是否使用飞机杆", variable=is_fly_rod_var)
+    cb_fly_rod.pack(side="left", padx=4)
+    def trace_fly_rod(*args):
+        setattr(config, "is_fly_rod", bool(is_fly_rod_var.get()))
+        save_config_to_file()
+    is_fly_rod_var.trace_add("write", trace_fly_rod)
+
+
 
     # Tab 3: 拖钓设置
     tab_trolling = ttk.Frame(notebook)

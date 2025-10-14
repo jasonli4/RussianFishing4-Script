@@ -26,7 +26,8 @@ def in_sea_map():
         sleep_time(random.uniform(0.4, 0.5))
 
     # 拿出鱼竿
-    if not config.is_fly_ticket:
+    # if not config.is_fly_ticket:
+    if (config.is_fly_ticket and not config.is_fly_rod) or not config.is_fly_ticket:
         sleep_time(random.uniform(0.42, 0.52))
         utils.press_key(config.fishing_rod_btn)
         sleep_time(random.uniform(2, 2.1))

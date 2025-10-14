@@ -15,7 +15,8 @@ def check_assembly(on_sea=False):
 
     # 检查是否组装完成
     if utils.check_template_in_region(region=config.region_check_assembly_area, template_path="assembly.png"):
-        if config.is_fly_ticket and on_sea:
+        # if config.is_fly_ticket and on_sea:
+        if config.is_fly_ticket and config.is_fly_rod and on_sea:
             logger.warning("线组被咬断")
             #重新配置钓组
             sleep_time(random.uniform(2, 2.1))

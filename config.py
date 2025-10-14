@@ -58,6 +58,7 @@ fish_block_types2 = 2
 
 #是不是飞机票
 is_fly_ticket=False
+is_fly_rod=True
 
 #开启拖钓模式
 is_trolling_mode=False
