@@ -1610,8 +1610,9 @@ def lure():
             if fish_mode_change():
                 return 0
             # 调整摩擦力
-            # if config.is_open_lock_unlock:
-            #     adjust_reel_friction(config.lure_reel_friction)
+            if config.is_open_lock_unlock:
+                adjust_reel_friction(config.lure_reel_friction)
+                config.last_action = 'down'
             #抛竿
             if config.lure_rod_power<100:
                 t=1.8*(random.uniform(config.lure_rod_power,config.lure_rod_power+5)/100)

@@ -1157,6 +1157,9 @@ def auto_fish_single():
                     #阻塞行为，续票完成后再执行下面的操作
                     utils.renew_ticket_blocking()
                     config.is_important_action=True
+                    if config.is_open_lock_unlock:
+                        adjust_reel_friction()
+                        config.last_action = 'down'
                     utils.click_left_mouse(random.uniform(0.08, 0.11))
                     config.is_cast_rod=True
                     logger.info("✅ 已经抛竿")
