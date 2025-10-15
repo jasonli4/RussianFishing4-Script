@@ -1,6 +1,6 @@
 <div align="center">
     
-# Russian Fishing 4 Script 🎣
+# 🎣 俄罗斯钓鱼4自动化脚本
 
 </div>
 
