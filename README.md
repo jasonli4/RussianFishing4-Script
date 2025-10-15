@@ -1,4 +1,4 @@
-<div align="center">
+<div align="left">
     
 # 🎣 俄罗斯钓鱼4自动化脚本
 
