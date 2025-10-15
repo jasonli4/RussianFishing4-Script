@@ -85,6 +85,7 @@ def save_config_to_file():
         "lure_rod_name": config.lure_rod_name,
         "auto_mode": config.auto_mode,
         "only_bottom_meters": config.only_bottom_meters,
+        "dig_bait_tool_name": config.dig_bait_tool_name,
         "game_mode": config.game_mode,
         "steam_path": config.steam_path,
         "standalone_path": config.standalone_path,
@@ -181,6 +182,7 @@ def load_config_from_file():
         config.lure_rod_name = data.get("lure_rod_name", getattr(config, "lure_rod_name", 'S68ML'))
         config.auto_mode = data.get("auto_mode", getattr(config, "auto_mode", 3))
         config.only_bottom_meters = data.get("only_bottom_meters", getattr(config, "only_bottom_meters", 10))
+        config.dig_bait_tool_name = data.get("dig_bait_tool_name", getattr(config, "dig_bait_tool_name", '铲'))
         config.game_mode = data.get("game_mode", getattr(config, "game_mode", 1))
         config.steam_path = data.get("steam_path", getattr(config, "steam_path", r'C:\Program Files (x86)\Steam\steam.exe'))
         config.standalone_path = data.get("standalone_path", getattr(config, "standalone_path", r'C:\Games\RF4_CN\RF4Launcher.exe'))
@@ -410,6 +412,7 @@ def launch_config_window():
         bottom_reel_friction_var.set(str(config.bottom_reel_friction))
         put_down_rod_key_var.set(config.put_down_rod_key)
         only_bottom_meters_var.set(str(config.only_bottom_meters))
+        dig_bait_tool_name_var.set(config.dig_bait_tool_name)
         bottom_map_var.set(get_bottom_map_text(config.bottom_map))
 
         # 刷新点位（铜湖、旧奥、琥珀湖、28图、白河）
@@ -943,6 +946,15 @@ def launch_config_window():
         lambda v: setattr(config, "only_bottom_meters", int(v) if v.isdigit() else config.only_bottom_meters),
         row
     )
+
+    dig_bait_tool_name_var, dig_bait_tool_name_entry, row = create_labeled_entry(
+        frame_fishing_params_bottom,
+        "挖饵的工具名称",
+        config.dig_bait_tool_name,
+        lambda v: setattr(config, "dig_bait_tool_name", v),
+        row
+    )
+
 
       # bottom_map_options = {"旧奥斯特罗格湖": 0, "琥珀湖": 1, "铜湖": 2}
     bottom_map_options = {"旧奥斯特罗格湖": 0,"琥珀湖": 1,"阿赫图巴河": 2,"铜湖":3,"惟有诺克河-梅花鲈":4}

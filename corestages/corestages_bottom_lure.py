@@ -1483,28 +1483,14 @@ def bottom(meters):
         #挖饵
         if config.is_dig_bait and config.current_stamina>70:
             sleep_time(random.uniform(0.42, 0.52))
-            utils.key_down('U')
-            sleep_time(random.uniform(0.42, 0.52))
-            cout = 0
-            max_attempts = 10  # 最大尝试次数
-            flyrod_regions=[]
-            while not config.stop_event.is_set() and cout < max_attempts:
-                cout += 1
-                flyrod_regions=utils.find_template_in_regions(config.FlyRodRegionScreenshot, 'shovel.png', confidence=0.95)
-                if len(flyrod_regions) > 0:
-                    drr=flyrod_regions[0]
-                    utils.move_mouse_random_in_region((drr["left"], drr["top"], drr["width"], drr["height"]))
-                    break
-            sleep_time(random.uniform(0.42, 0.52))
-            utils.click_left_mouse(0.1)
-            sleep_time(random.uniform(0.42, 0.52))
-            utils.key_up('U')
+            get_item(config.dig_bait_tool_name)
             sleep_time(random.uniform(2.42, 2.52))
             utils.click_left_mouse(0.1)
             now=time.time()
             while not config.stop_event.is_set() and time.time()-now<8:
                 regions=utils.find_template_in_regions(config.region_dig_bait_sure, 'keepnet.png', confidence=0.95)
                 if len(regions) > 0:
+                    sleep_time(random.uniform(1.42, 1.52))
                     utils.press_key('Space')
                     break
             sleep_time(random.uniform(0.42, 0.52))

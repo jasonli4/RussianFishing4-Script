@@ -90,6 +90,8 @@ gear_ratio = 0.3
 
 
 #水底和路亚钓鱼参数
+#自动模式：0为全天水底，1为全天路亚，2为白天路亚，晚上水底,3为只有水底，4为只有路亚
+auto_mode=3
 #是否为彩虹线
 is_rainbow_line=True
 #是否保留不达标的鱼
@@ -100,45 +102,45 @@ chum_the_water=True
 is_dig_bait=False
 #是否切鱼肉，True是切鱼肉，False是不切鱼肉
 is_cut_fish_bottom_lure=False
-#路亚模式，1是白河路亚，2是老奥打狗
-lure_mode=1
+#水底的地图：0为旧奥斯特罗格湖，1为琥珀湖，2为阿赫图巴河，3为铜湖，4为惟有诺克河-梅花鲈
+bottom_map=0
 #水底轮子收线速度
 bottom_reel_speed=50
 #水底轮子摩擦力
 bottom_reel_friction=25
-#路亚轮子收线速度
-lure_reel_speed=25
-#路亚轮子摩擦力
-lure_reel_friction=23
 #放下竿子的按键
 put_down_rod_key='x'
+#auto_mode为3的时候的卡米数
+only_bottom_meters=10
+#挖饵的工具名称
+dig_bait_tool_name='铲'
 #水底地图点位
 laoao_points=[]
 hupo_points=[]
 ahetubahe_points=[]
 tonghu_points=[]
 weiyounuoke_mhl_points=[]
+
+#路亚鱼竿名称
+lure_rod_name='S68ML'
+#路亚模式，1是匀速收线，2是抽停
+lure_mode=1
+#路亚轮子收线速度
+lure_reel_speed=25
+#路亚轮子摩擦力
+lure_reel_friction=23
+#路亚的地图：1为白河,2为埃尔克湖
+lure_map=1
+#沉底时间
+sink_time=12
+lure_rod_power=70
+lure_rod_reeling_duration=1.1
+lure_rod_stop_duration=0.5
 #路亚地图点位
 baihe_lure_points=[]
 aier_lure_points=[]
 
 
-#路亚鱼竿名称
-lure_rod_name='S68ML'
-#自动模式：0为全天水底，1为全天路亚，2为白天路亚，晚上水底,3为只有水底，4为只有路亚
-auto_mode=3
-#水底的地图：0为旧奥斯特罗格湖，1为琥珀湖，2为阿赫图巴河，3为铜湖，4为惟有诺克河-梅花鲈
-bottom_map=0
-#路亚的地图：1为白河,2为埃尔克湖
-lure_map=1
-#auto_mode为3的时候的卡米数
-only_bottom_meters=10
-#沉底时间
-sink_time=12
-
-lure_rod_power=70
-lure_rod_reeling_duration=1.1
-lure_rod_stop_duration=0.5
 
 #手竿
 #水面状态，1为平静，2为波动
