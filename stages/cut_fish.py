@@ -96,7 +96,7 @@ def cut_fish_process(fish_block_type):
                 sleep_time(random.uniform(0.2, 0.3))
                 utils.press_key('Space')
                 break
-            if utils.check_template_in_region(config.region_fail_sure,'fail_sure.png'):
+            if utils.check_template_in_region(config.region_fail_sure,'failsure.png'):
                 sleep_time(random.uniform(0.2, 0.3))
                 utils.move_mouse_random_in_region((900, 556, 120, 36))#确定按钮
                 sleep_time(random.uniform(0.2, 0.3))

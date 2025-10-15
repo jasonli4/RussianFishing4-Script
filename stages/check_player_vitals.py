@@ -11,6 +11,7 @@ def check_player_vitals():
     while not config.stop_event.is_set():
         stamina=utils.analyze_region_colors(config.region_stamina)
         hunger=utils.analyze_region_colors(config.region_hunger)
+        config.current_stamina = stamina
 
         if stamina<50 and config.is_reeling_line:
             utils.press_key(config.stamina_btn)

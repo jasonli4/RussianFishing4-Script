@@ -115,7 +115,8 @@ def save_config_to_file():
         #其他
         "is_rainbow_line": config.is_rainbow_line,
         "keep_underperforming_fish": config.keep_underperforming_fish,
-        "chum_the_water": config.chum_the_water        
+        # "chum_the_water": config.chum_the_water
+        "is_dig_bait": config.is_dig_bait
     }
     with open(CONFIG_FILE, "w", encoding="utf-8") as f:
         json.dump(config_dict, f, indent=2, ensure_ascii=False)
@@ -203,7 +204,9 @@ def load_config_from_file():
 
         config.is_rainbow_line = data.get("is_rainbow_line", getattr(config, "is_rainbow_line", False))
         config.keep_underperforming_fish = data.get("keep_underperforming_fish", getattr(config, "keep_underperforming_fish", False))
-        config.chum_the_water = data.get("chum_the_water", getattr(config, "chum_the_water", False))        
+        # config.chum_the_water = data.get("chum_the_water", getattr(config, "chum_the_water", False))
+        config.is_dig_bait = data.get("is_dig_bait", getattr(config, "is_dig_bait", False)) 
+
         # 加载老奥点位，限制最多四个
         laoao_loaded_points = data.get("laoao_points", config.laoao_points)[:3]
         # 确保每个点位有 name, point_id, baits
@@ -400,7 +403,8 @@ def launch_config_window():
         auto_mode_var.set(get_auto_mode_text(config.auto_mode))
         is_rainbow_line_var.set(config.is_rainbow_line)
         keep_underperforming_fish_var.set(config.keep_underperforming_fish)
-        chum_the_water_var.set(config.chum_the_water)
+        # chum_the_water_var.set(config.chum_the_water)
+        is_dig_bait_var.set(config.is_dig_bait)
         is_cut_fish_var.set(config.is_cut_fish)
         bottom_reel_speed_var.set(str(config.bottom_reel_speed))
         bottom_reel_friction_var.set(str(config.bottom_reel_friction))
@@ -877,13 +881,21 @@ def launch_config_window():
     keep_underperforming_fish_var.trace_add("write", trace_func2)
 
 
-    chum_the_water_var = tk.BooleanVar(value=getattr(config, "chum_the_water", False))
-    cb2 = ttk.Checkbutton(checkbox_container, text="是否打窝（手抛）", variable=chum_the_water_var)
+    # chum_the_water_var = tk.BooleanVar(value=getattr(config, "chum_the_water", False))
+    # cb2 = ttk.Checkbutton(checkbox_container, text="是否打窝（手抛）", variable=chum_the_water_var)
+    # cb2.pack(side="left", padx=2)
+    # def trace_func4(*args):
+    #     setattr(config, "chum_the_water", bool(chum_the_water_var.get()))
+    #     save_config_to_file()
+    # chum_the_water_var.trace_add("write", trace_func4)
+
+    is_dig_bait_var = tk.BooleanVar(value=getattr(config, "is_dig_bait", False))
+    cb2 = ttk.Checkbutton(checkbox_container, text="是否挖饵", variable=is_dig_bait_var)
     cb2.pack(side="left", padx=2)
     def trace_func4(*args):
-        setattr(config, "chum_the_water", bool(chum_the_water_var.get()))
+        setattr(config, "is_dig_bait", bool(is_dig_bait_var.get()))
         save_config_to_file()
-    chum_the_water_var.trace_add("write", trace_func4)
+    is_dig_bait_var.trace_add("write", trace_func4)
     
     is_cut_fish_bottom_lure_var = tk.BooleanVar(value=getattr(config, "is_cut_fish_bottom_lure", False))
     cb3 = ttk.Checkbutton(checkbox_container, text="是否切鱼肉", variable=is_cut_fish_bottom_lure_var)

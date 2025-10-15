@@ -1112,6 +1112,7 @@ def auto_fish_single():
         utils.move_mouse_relative_smooth(0, 280, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
         sleep_time(random.uniform(0.41, 0.52))
         adjust_reel_settings()
+        config.last_action = 'down'
         utils.move_mouse_relative_smooth(0, -280, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
         sleep_time(random.uniform(0.41, 0.52))
         config.is_important_action=False

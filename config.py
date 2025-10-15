@@ -96,6 +96,8 @@ is_rainbow_line=True
 keep_underperforming_fish=False
 #是否打窝(手抛)
 chum_the_water=True
+#是否挖饵
+is_dig_bait=False
 #是否切鱼肉，True是切鱼肉，False是不切鱼肉
 is_cut_fish_bottom_lure=False
 #路亚模式，1是白河路亚，2是老奥打狗
@@ -214,6 +216,7 @@ auto_change_pit=False
 auto_pits=[]
 current_fish_mode=None
 last_action = 'down'
+current_stamina=100 #当前体力值
 
 # ========== 每日休息相关 ==========
 # 下一次休息的开始时间戳（秒）
@@ -312,6 +315,8 @@ region_reel_name = {"left": 1073, "top": 327, "width": 700, "height": 39}       
 region_leader_line_name = {"left": 1073, "top": 511, "width": 700, "height": 39}   # 引线名称区域
 
 region_keepnet = {"left": 806, "top": 971, "width": 49, "height": 21}          # 入护图标区域
+
+region_dig_bait_sure = {"left": 843, "top": 939, "width": 234, "height": 64}          # 挖饵确定图标区域
 
 region_sure = {"left": 937, "top": 971, "width": 49, "height": 21}          # 确定图标区域
 
