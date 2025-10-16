@@ -814,7 +814,7 @@ def launch_config_window():
         "手竿的钓鱼模式",
         list(hand_rod_fishing_mode_map.keys()),
         get_hand_rod_fishing_mode_text(config.hand_rod_fishing_mode),
-        lambda v: [setattr(config, "hand_rod_fishing_mode", hand_rod_fishing_mode_map.get(v, 0)), save_config_to_file()],
+        lambda v: [setattr(config, "hand_rod_fishing_mode", hand_rod_fishing_mode_map.get(v, 0)), save_config_to_file(), update_fields_state()],
         row,
         tooltip_text="全天手竿-自动卖鱼-换点：全天使用手竿钓鱼，自动卖鱼并换点\n仅手竿：只有手竿钓鱼功能"
     )
@@ -2056,9 +2056,9 @@ def launch_config_window():
                 "normal" if is_lure_mode and config.lure_map == 2 else "disabled")
         
         set_state([], [], [], [], weiyounuoke_hand_add_button,
-                "normal" if config.hand_rod_fishing_map == 1 else "disabled")
+                "normal" if config.hand_rod_fishing_mode==1 and config.hand_rod_fishing_map == 1 else "disabled")
         set_state([], [], [], [], beidun_hand_add_button,
-                "normal" if config.hand_rod_fishing_map == 2 else "disabled")
+                "normal" if config.hand_rod_fishing_mode==1 and config.hand_rod_fishing_map == 2 else "disabled")
 
         # ------------------ 更新容器可见性 ------------------
         hide_all_containers()
@@ -2080,9 +2080,9 @@ def launch_config_window():
         elif is_lure_mode and config.lure_map == 2:
             show_container(aier_container, aier_add_button, aier_container_row)
 
-        if config.hand_rod_fishing_map == 1:
+        if config.hand_rod_fishing_mode==1 and config.hand_rod_fishing_map == 1:
             show_container(weiyounuoke_hand_container, weiyounuoke_hand_add_button, weiyounuoke_hand_container_row)
-        elif config.hand_rod_fishing_map == 2:
+        elif config.hand_rod_fishing_mode==1 and config.hand_rod_fishing_map == 2:
             show_container(beidun_hand_container, beidun_hand_add_button, beidun_hand_container_row)
 
     #----------------------------路亚--------------------------------
