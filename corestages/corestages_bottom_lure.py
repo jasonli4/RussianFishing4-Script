@@ -4,6 +4,7 @@ import pyperclip
 import config
 from logger import logger
 from  stages import navigator
+from stages.check_assembly import check_assembly
 from stages.check_fishnet_status import get_fish_count_other
 from stages.coffee_shop_task import coffee_shop_task_func
 from stages.cut_fish import cut_fish
@@ -1523,6 +1524,7 @@ def lure():
     start_daemon_thread(set_friction_from_slider)
     #抛竿
     def throw_rod():
+        check_assembly()
         if utils.check_template_in_region(config.region_cast_rod,'cast_rod.png'):
             utils.mouse_up_left()
             utils.key_up('Left Shift')
