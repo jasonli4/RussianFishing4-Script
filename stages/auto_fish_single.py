@@ -20,7 +20,7 @@ from logger import logger  # 确保你的 logger 已 setup
 #打状态
 def get_fish_status():
     """
-    渔杆打状态（优化版）
+    渔竿打状态（优化版）
     """
 
     last_values = deque(maxlen=10)
@@ -1054,7 +1054,7 @@ def auto_fish_single():
         sleep_time(random.uniform(0.42, 0.52))
         utils.key_up('U')
         
-        #配置鱼杆
+        #配置鱼竿
         sleep_time(random.uniform(2, 2.1))
         utils.press_key('v')
         #修改钓组

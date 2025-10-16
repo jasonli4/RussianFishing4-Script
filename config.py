@@ -167,10 +167,15 @@ hand_rod_bait_name1=''
 #需要更换的饵料名称2
 hand_rod_bait_name2=''
 
-#手杆的钓鱼模式，1为全天手杆-自动卖鱼-换点，2为只有手杆
+#手竿的钓鱼模式，1为全天手竿-自动卖鱼-换点，2为只有手竿
 hand_rod_fishing_mode=1
-#全天手杆的地图，1为唯唯诺诺河钓雅罗鱼，2为北顿钓黑海
+#全天手竿的地图，1为唯唯诺诺河钓雅罗鱼，2为北顿钓黑海
 hand_rod_fishing_map=1
+#当前钓鱼时间
+current_fish_start_time=0
+#手竿点位
+weiyounuoke_hand_points=[]
+beidun_hand_points=[]
 
 
 #游戏重启配置
@@ -179,7 +184,7 @@ game_mode=1
 steam_path = r'C:\Program Files (x86)\Steam\steam.exe'
 standalone_path = r'C:\Games\RF4_CN\RF4Launcher.exe'
 
-#模式类型，1为手杆钓鱼，2为水底和路亚，3为海图搬砖,4为连点器
+#模式类型，1为手竿钓鱼，2为水底和路亚，3为海图搬砖,4为连点器
 mode_type=1
 
 # 休息设置
@@ -260,7 +265,7 @@ weiyouMapPickerRegionScreenshotClick=(589,619,234,128)#惟有诺克河地图入�
 BeidunMapPickerRegionScreenshotClick=(335,769,234,128)#北顿涅茨河地图入口
 
 MapPickerConfirmButtonRegionClick=(83,485,154,54)#地图进入按钮
-MapLimitRegionScreenshot={"left": 727, "top": 399, "width": 106, "height": 102}#地图限制区域
+MapLimitRegionScreenshot={"left": 708, "top": 370, "width": 504, "height": 324}#地图限制区域
 
 # 退出游戏按钮区域
 QuitGameButtonRegionScreenshot = {"left": 1372, "top": 687, "width": 116, "height": 116}  # 退出游戏按钮区域
@@ -367,22 +372,22 @@ GameTimeRegionScreenshot={"left": 971, "top": 482, "width": 184, "height": 66}
 GameTimeRegionScreenshotFly={"left": 971, "top": 556, "width": 184, "height": 66}
 
 
-#手杆上鱼的检测区域
+#手竿上鱼的检测区域
 region_hand_rod_bite = {"left": 881, "top": 835, "width": 158, "height": 158}
 
-#手杆主线配置区域
+#手竿主线配置区域
 region_hand_rod_main_line = (1001, 327, 64, 44)
-#手杆漂浮配置区域
+#手竿漂浮配置区域
 region_hand_rod_float = (1001, 409, 64, 44)
-#手杆沉子配置区域
+#手竿沉子配置区域
 region_hand_rod_sink = (1001, 491, 64, 44)
-#手杆引线配置区域
+#手竿引线配置区域
 region_hand_rod_leader_line = (1001, 583, 64, 44)
-#手杆鱼钩配置区域
+#手竿鱼钩配置区域
 region_hand_rod_hook = (1001, 675, 64, 44)
-#手杆鱼饵配置区域
+#手竿鱼饵配置区域
 region_hand_rod_bait1 = (1001, 767, 64, 44)
-#手杆鱼饵配置区域2
+#手竿鱼饵配置区域2
 region_hand_rod_bait2 = (1001, 859, 64, 44)
 
 

@@ -93,7 +93,7 @@ def save_config_to_file():
         "mode_type": config.mode_type,
         "rest_interval_hours": config.rest_interval_hours,
         "rest_duration_minutes": config.rest_duration_minutes,
-        #手杆
+        #手竿
         "hand_rod_fishing_mode": config.hand_rod_fishing_mode,
         "hand_rod_fishing_map": config.hand_rod_fishing_map,
         "water_status": config.water_status,
@@ -114,6 +114,8 @@ def save_config_to_file():
         "weiyounuoke_mhl_points": config.weiyounuoke_mhl_points,
         "baihe_lure_points": config.baihe_lure_points,
         "aier_lure_points": config.aier_lure_points,
+        "weiyounuoke_hand_points": config.weiyounuoke_hand_points,
+        "beidun_hand_points": config.beidun_hand_points,
         #其他
         "is_rainbow_line": config.is_rainbow_line,
         "keep_underperforming_fish": config.keep_underperforming_fish,
@@ -191,7 +193,7 @@ def load_config_from_file():
         config.mode_type = data.get("mode_type", getattr(config, "mode_type", 1))
         config.rest_interval_hours = data.get("rest_interval_hours", getattr(config, "rest_interval_hours", 3))
         config.rest_duration_minutes = data.get("rest_duration_minutes", getattr(config, "rest_duration_minutes", 15))
-        #手杆
+        #手竿
         config.hand_rod_fishing_mode = data.get("hand_rod_fishing_mode", getattr(config, "hand_rod_fishing_mode", 1))
         config.hand_rod_fishing_map = data.get("hand_rod_fishing_map", getattr(config, "hand_rod_fishing_map", 1))
         config.water_status = data.get("water_status", getattr(config, "water_status", 0))
@@ -285,6 +287,57 @@ def load_config_from_file():
                 # "meters": p.get("meters", "")
                 } for i, p in enumerate(aier_lure_loaded_points)
         ]
+        #手竿
+        # 加载唯有诺克河手竿点位，限制最多三个
+        weiyounuoke_hand_loaded_points = data.get("weiyounuoke_hand_points", config.weiyounuoke_hand_points)[:3]
+        # 确保每个点位有 name, point_id, baits
+        config.weiyounuoke_hand_points = [
+            {
+                "point_id": p.get("point_id", f"point_{i+1}"),
+                # "meters": p.get("meters", "")
+                } for i, p in enumerate(weiyounuoke_hand_loaded_points)
+        ]
+        # 加载北顿点位，限制最多三个
+        beidun_hand_loaded_points = data.get("beidun_hand_points", config.beidun_hand_points)[:3]
+        # 确保每个点位有 name, point_id, baits
+        config.beidun_hand_points = [
+            {
+                "point_id": p.get("point_id", f"point_{i+1}"),
+                # "meters": p.get("meters", "")
+                } for i, p in enumerate(beidun_hand_loaded_points)
+        ]
+
+
+class ToolTip:
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tipwindow = None
+        widget.bind("<Enter>", self.show_tip)
+        widget.bind("<Leave>", self.hide_tip)
+
+    def show_tip(self, event=None):
+        if self.tipwindow or not self.text:
+            return
+        x, y, cx, cy = self.widget.bbox("insert") or (0, 0, 0, 0)
+        x = x + self.widget.winfo_rootx() + 20
+        y = y + cy + self.widget.winfo_rooty() + 20
+        self.tipwindow = tw = tk.Toplevel(self.widget)
+        tw.wm_overrideredirect(True)
+        tw.wm_geometry(f"+{x}+{y}")
+        label = tk.Label(
+            tw, text=self.text,
+            justify="left",
+            background="#ffffe0", relief="solid", borderwidth=1,
+            font=("Microsoft YaHei", 9)
+        )
+        label.pack(ipadx=5, ipady=2)
+
+    def hide_tip(self, event=None):
+        if self.tipwindow:
+            self.tipwindow.destroy()
+            self.tipwindow = None
+
     
 
 
@@ -338,8 +391,9 @@ def launch_config_window():
     notebook.pack(fill="both", expand=True, padx=10, pady=10)
 
     
-    def create_labeled_entry(parent, label, default, update_func, row):
-        ttk.Label(parent, text=label).grid(row=row, column=0, sticky="w", pady=2, padx=2)
+    def create_labeled_entry(parent, label, default, update_func, row, tooltip_text=None):
+        label=ttk.Label(parent, text=label)
+        label.grid(row=row, column=0, sticky="w", pady=2, padx=2)
         var = tk.StringVar(value=str(default))
         entry = ttk.Entry(parent, textvariable=var, width=22,font=("Microsoft YaHei", 8))
         entry.grid(row=row, column=1, sticky="w", padx=2)
@@ -347,10 +401,16 @@ def launch_config_window():
             update_func(var.get())
             save_config_to_file()
         var.trace_add("write", trace_func)
+        
+        # 🔹 添加悬浮提示
+        if tooltip_text:
+            ToolTip(label, tooltip_text)
+
         return var, entry, row + 1
 
-    def create_labeled_combobox(parent, label, values, default, update_func, row):
-        ttk.Label(parent, text=label).grid(row=row, column=0, sticky="w", pady=2, padx=2)
+    def create_labeled_combobox(parent, label, values, default, update_func, row, tooltip_text=None):
+        label=ttk.Label(parent, text=label)
+        label.grid(row=row, column=0, sticky="w", pady=2, padx=2)
         var = tk.StringVar(value=str(default))
         combo = ttk.Combobox(parent, values=values, textvariable=var, width=19, state="readonly",font=("Microsoft YaHei", 8) )
         combo.grid(row=row, column=1, sticky="w", padx=2)
@@ -358,6 +418,11 @@ def launch_config_window():
             update_func(var.get())
             save_config_to_file()
         var.trace_add("write", trace_func)
+
+        # 🔹 添加悬浮提示
+        if tooltip_text:
+            ToolTip(label, tooltip_text)
+
         return var, combo, row + 1
 
     def create_checkbox(parent, label, default, update_func, row):
@@ -389,7 +454,7 @@ def launch_config_window():
         rest_interval_hours_var.set(str(config.rest_interval_hours))
         rest_duration_minutes_var.set(str(config.rest_duration_minutes))
 
-        # 更新手杆
+        # 更新手竿
         hand_rod_fishing_mode_var.set(get_hand_rod_fishing_mode_text(config.hand_rod_fishing_mode))
         hand_rod_fishing_map_var.set(get_hand_rod_fishing_map_text(config.hand_rod_fishing_map))
         water_status_var.set(get_water_status_text(config.water_status))
@@ -425,6 +490,10 @@ def launch_config_window():
         render_ahetubahe_points()
         render_weiyounuoke_mhl_points()
         render_baihe_points()
+        render_aier_points()
+        render_weiyounuoke_hand_points()
+        render_beidun_hand_points()
+
         update_add_button_state()
         update_laoao_add_button_state()
         update_hupo_add_button_state()
@@ -432,6 +501,8 @@ def launch_config_window():
         update_weiyounuoke_mhl_add_button_state()
         update_baihe_add_button_state()
         update_aier_add_button_state()
+        update_weiyounuoke_hand_add_button_state()
+        update_beidun_hand_add_button_state()
 
         # 更新路亚参数
         lure_mode_var.set(get_lure_mode_text(config.lure_mode))
@@ -592,12 +663,12 @@ def launch_config_window():
 
     row = 0
 
-    mode_type_map = {"手杆": 1, "水底和路亚": 2, "海图": 3, "自动连点": 4}
+    mode_type_map = {"手竿": 1, "水底和路亚": 2, "海图": 3, "自动连点": 4}
     def get_mode_type_text(val):
         for k, v in mode_type_map.items():
             if v == val:
                 return k
-        return "手杆"
+        return "手竿"
 
     selected_mode_type, selected_mode_type_combo, row = create_labeled_combobox(
         frame_home,
@@ -703,52 +774,49 @@ def launch_config_window():
     config_file_label.grid(row=row, column=0, columnspan=2, pady=5, sticky="w")
 
     row += 1
+
+
+    #点位变量
+    #水底
+    laoao_available_points = ["48,28", "23,67", "25,41", "42,32", "36,28", "35,29","20,34","35,58","23,45","09,50","27,27", "67,59_laoao","27,54"]  # 老奥点位
+    tonghu_available_points = ["66,55", "56,50", "67,59", "37,32", "44,34", "67,58", "66,59"]  # 铜湖点位
+    hupo_available_points = []  # 琥珀湖点位
+    ahetubahe_available_points = []  # 阿赫图巴赫点位
+    weiyounuoke_mhl_available_points = ["99,121"] # 惟有诺克河-梅花鲈点位
+    #路亚
+    baihe_available_points = ["71,37", "66,28", "65,26", "73,45", "73,59"]  # 白河点位
+    aier_available_points = ["65,93"]  # 艾尔克湖点位
+    #手竿
+    weiyounuoke_hand_available_points = ["72,85","87,103"]  #惟有诺克河-手竿点位
+    beidun_hand_available_points = ["96,137","99,133","72,160"]  #北顿-手竿点位
     
 
     tab_hand = ttk.Frame(notebook)
-    notebook.add(tab_hand, text="手杆")
+    notebook.add(tab_hand, text="手竿")
 
-    frame_fishing_hand = ttk.LabelFrame(tab_hand, text="手杆参数", padding=10)
+    frame_fishing_hand = ttk.LabelFrame(tab_hand, text="手竿参数", padding=10)
     frame_fishing_hand.pack(fill="both", padx=5, pady=5)
 
     row = 0
 
     hand_rod_fishing_mode_map = {
-        "全天手杆-自动卖鱼-换点": 1,
-        "仅手杆": 2,
+        "全天手竿-自动卖鱼-换点": 1,
+        "仅手竿": 2,
     }
     def get_hand_rod_fishing_mode_text(val):
         for k, v in hand_rod_fishing_mode_map.items():
             if v == val:
                 return k
-        return "仅手杆"
+        return "仅手竿"
 
     hand_rod_fishing_mode_var, hand_rod_fishing_mode_combo, row = create_labeled_combobox(
         frame_fishing_hand,
-        "手杆的钓鱼模式",
+        "手竿的钓鱼模式",
         list(hand_rod_fishing_mode_map.keys()),
         get_hand_rod_fishing_mode_text(config.hand_rod_fishing_mode),
         lambda v: [setattr(config, "hand_rod_fishing_mode", hand_rod_fishing_mode_map.get(v, 0)), save_config_to_file()],
-        row
-    )
-
-    hand_rod_fishing_map_map = {
-        "惟有诺克河钓雅罗鱼": 1,
-        "北顿钓黑海": 2,
-    }
-    def get_hand_rod_fishing_map_text(val):
-        for k, v in hand_rod_fishing_map_map.items():
-            if v == val:
-                return k
-        return "北顿钓黑海"
-
-    hand_rod_fishing_map_var, hand_rod_fishing_map_combo, row = create_labeled_combobox(
-        frame_fishing_hand,
-        "全天手杆的地图",
-        list(hand_rod_fishing_map_map.keys()),
-        get_hand_rod_fishing_map_text(config.hand_rod_fishing_map),
-        lambda v: [setattr(config, "hand_rod_fishing_map", hand_rod_fishing_map_map.get(v, 0)), save_config_to_file()],
-        row
+        row,
+        tooltip_text="全天手竿-自动卖鱼-换点：全天使用手竿钓鱼，自动卖鱼并换点\n仅手竿：只有手竿钓鱼功能"
     )
 
     water_status_map = {
@@ -767,73 +835,312 @@ def launch_config_window():
         list(water_status_map.keys()),
         get_water_status_text(config.water_status),
         lambda v: [setattr(config, "water_status", water_status_map.get(v, 0)), save_config_to_file()],
-        row
+        row,
+        tooltip_text="静水：视角不会转动\n流水：视角会从左往右转动"
     )
 
-    # 手杆参数
+    # 手竿参数
     hand_rod_power_var, hand_rod_power_entry, row = create_labeled_entry(
         frame_fishing_hand,
-        "手杆力度",
+        "手竿力度",
         config.hand_rod_power,
         lambda v: setattr(config, "hand_rod_power", int(v) if v.isdigit() else config.hand_rod_power),
-        row
+        row,
+        tooltip_text="手竿抛竿力度，大于等于100为全力抛竿"
     )
     drifting_total_duration_var, drifting_total_duration_entry, row = create_labeled_entry(
         frame_fishing_hand,
-        "漂流状态下等待的总时长(s)",
+        "转动视角时间(s)",
         config.drifting_total_duration,
         lambda v: setattr(config, "drifting_total_duration", int(v) if v.isdigit() else config.drifting_total_duration),
-        row
+        row,
+        tooltip_text="漂流状态下多久转动一次视角"
     )
     hand_rod_main_line_name_var, hand_rod_main_line_name_entry, row = create_labeled_entry(
         frame_fishing_hand,
-        "手杆主线名称",
+        "手竿主线名称",
         config.hand_rod_main_line_name,
         lambda v: setattr(config, "hand_rod_main_line_name", v),
-        row
+        row,
+        tooltip_text="断线后自动更换，留空则不更换"
     )
     hand_rod_float_name_var, hand_rod_float_name_entry, row = create_labeled_entry(
         frame_fishing_hand,
-        "手杆浮漂名称",
+        "手竿浮漂名称",
         config.hand_rod_float_name,
         lambda v: setattr(config, "hand_rod_float_name", v),
-        row
+        row,
+        tooltip_text="断线后自动更换，留空则不更换"
     )
     hand_rod_sink_name_var, hand_rod_sink_name_entry, row = create_labeled_entry(
         frame_fishing_hand,
-        "手杆沉子名称",
+        "手竿沉子名称",
         config.hand_rod_sink_name,
         lambda v: setattr(config, "hand_rod_sink_name", v),
-        row
+        row,
+        tooltip_text="断线后自动更换，留空则不更换"
     )
     hand_rod_leader_line_name_var, hand_rod_leader_line_name_entry, row = create_labeled_entry(
         frame_fishing_hand,
-        "手杆引线名称",
+        "手竿引线名称",
         config.hand_rod_leader_line_name,
         lambda v: setattr(config, "hand_rod_leader_line_name", v),
-        row
+        row,
+        tooltip_text="断线后自动更换，留空则不更换"
     )
     hand_rod_hook_name_var, hand_rod_hook_name_entry, row = create_labeled_entry(
         frame_fishing_hand,
-        "手杆钩子名称",
+        "手竿钩子名称",
         config.hand_rod_hook_name,
         lambda v: setattr(config, "hand_rod_hook_name", v),
-        row
+        row,
+        tooltip_text="断线后自动更换，留空则不更换"
     )
     hand_rod_bait_name1_var, hand_rod_bait_name1_entry, row = create_labeled_entry(
         frame_fishing_hand,
-        "手杆饵料名称1",
+        "手竿饵料名称1",
         config.hand_rod_bait_name1,
         lambda v: setattr(config, "hand_rod_bait_name1", v),
-        row
+        row,
+        tooltip_text="断线后自动更换，留空则不更换"
     )
     hand_rod_bait_name2_var, hand_rod_bait_name2_entry, row = create_labeled_entry(
         frame_fishing_hand,
-        "手杆饵料名称2",
+        "手竿饵料名称2",
         config.hand_rod_bait_name2,
         lambda v: setattr(config, "hand_rod_bait_name2", v),
+        row,
+        tooltip_text="断线后自动更换，留空则不更换"
+    )
+    
+    hand_rod_fishing_map_map = {
+        "惟有诺克河钓雅罗鱼": 1,
+        "北顿钓黑海": 2,
+    }
+    def get_hand_rod_fishing_map_text(val):
+        for k, v in hand_rod_fishing_map_map.items():
+            if v == val:
+                return k
+        return "北顿钓黑海"
+
+    hand_rod_fishing_map_var, hand_rod_fishing_map_combo, row = create_labeled_combobox(
+        frame_fishing_hand,
+        "全天手竿的地图",
+        list(hand_rod_fishing_map_map.keys()),
+        get_hand_rod_fishing_map_text(config.hand_rod_fishing_map),
+        lambda v: [setattr(config, "hand_rod_fishing_map", hand_rod_fishing_map_map.get(v, 0)), save_config_to_file(), update_fields_state()],
         row
     )
+    
+    # 为 weiyounuoke_hand_entries 添加 UI，类似于 tonghu
+    weiyounuoke_hand_entries = []
+    weiyounuoke_hand_bait_entries = []
+    weiyounuoke_hand_meters_entries = []
+    weiyounuoke_hand_id_selectors = []
+
+    weiyounuoke_hand_container_row = row
+    weiyounuoke_hand_container = ttk.Frame(frame_fishing_hand)
+    weiyounuoke_hand_container.grid(row=row, column=0, columnspan=2, sticky="w", pady=0, padx=0)
+    row += 1
+
+    def save_weiyounuoke_hand_meters(key, value):
+        config.weiyounuoke_hand_points[key]["meters"] = value
+        save_config_to_file()
+
+    def refresh_weiyounuoke_hand_point_options():
+        used = {var.get() for _, var, _ in weiyounuoke_hand_id_selectors if var.get()}
+        for combo, var, idx in weiyounuoke_hand_id_selectors:
+            current = var.get()
+            values = [p for p in weiyounuoke_hand_available_points if p not in used or p == current]
+            combo['values'] = values
+        if not config.weiyounuoke_hand_points:
+            for combo, _, _ in weiyounuoke_hand_id_selectors:
+                combo['values'] = []
+
+    def render_weiyounuoke_hand_points():
+        for widget in weiyounuoke_hand_container.winfo_children():
+            widget.destroy()
+        weiyounuoke_hand_entries.clear()
+        weiyounuoke_hand_bait_entries.clear()
+        weiyounuoke_hand_meters_entries.clear()
+        weiyounuoke_hand_id_selectors.clear()
+
+        if not config.weiyounuoke_hand_points:
+            ttk.Label(weiyounuoke_hand_container, text="暂无唯有诺克河点位配置").grid(row=0, column=0, sticky="w")
+            return
+
+        row_frame = None
+        for idx, point in enumerate(config.weiyounuoke_hand_points):
+            if idx % 3 == 0:
+                row_frame = ttk.Frame(weiyounuoke_hand_container)
+                row_frame.grid(row=idx // 3, column=0, sticky="w", pady=0, padx=0)
+
+            group_frame = ttk.Frame(row_frame)
+            group_frame.grid(column=idx % 3, row=0, sticky="w", padx=0)
+
+            # 点位编号下拉框
+            ttk.Label(group_frame, text="点位编号").grid(row=0, column=0, sticky="w", pady=2, padx=2)
+            point_var = tk.StringVar(value=point['point_id'])
+            point_selector = ttk.Combobox(
+                group_frame,
+                textvariable=point_var,
+                values=[p for p in weiyounuoke_hand_available_points if p not in [pt['point_id'] for pt in config.weiyounuoke_hand_points if pt != point]],
+                state="readonly",
+                width=12,
+                font=("Microsoft YaHei", 8)
+            )
+            point_selector.grid(row=0, column=1, sticky="w", pady=2, padx=2)
+            point_var.trace_add("write", lambda *a, v=point_var, i=idx: [config.weiyounuoke_hand_points[i].update({'point_id': v.get()}), refresh_weiyounuoke_hand_point_options(), save_config_to_file()])
+            weiyounuoke_hand_id_selectors.append((point_selector, point_var, idx))
+
+            # 删除按钮
+            ttk.Button(
+                group_frame,
+                text="删除",
+                style="Small.TButton",
+                command=lambda i=idx: [config.weiyounuoke_hand_points.pop(i), save_config_to_file(), render_weiyounuoke_hand_points(), update_weiyounuoke_hand_add_button_state()]
+            ).grid(row=1, column=0, columnspan=2, pady=2)
+
+    def add_weiyounuoke_hand_point():
+        if len(config.weiyounuoke_hand_points) < 3:
+            used_points = [p["point_id"] for p in config.weiyounuoke_hand_points]
+            available_points = weiyounuoke_hand_available_points
+            for point_id in available_points:
+                if point_id not in used_points:
+                    config.weiyounuoke_hand_points.append({"point_id": point_id})
+                    save_config_to_file()
+                    render_weiyounuoke_hand_points()
+                    break
+            else:
+                logger.warning("无可用点位可添加")
+        else:
+            logger.warning("已达到最大点位数量（3个）")
+
+    weiyounuoke_hand_add_button = ttk.Button(
+        frame_fishing_hand,
+        text="添加唯有诺克河点位",
+        style="Small.TButton",
+        command=lambda: [add_weiyounuoke_hand_point(), update_weiyounuoke_hand_add_button_state()]
+    )
+    weiyounuoke_hand_add_button.grid(row=row, column=0, columnspan=2, pady=2, sticky="w")
+    row += 1
+
+    def update_weiyounuoke_hand_add_button_state():
+        if len(config.weiyounuoke_hand_points) >= 3:
+            weiyounuoke_hand_add_button.config(state="disabled")
+        else:
+            weiyounuoke_hand_add_button.config(state="normal")
+
+    # 刷新唯有诺克河点位下拉框
+    render_weiyounuoke_hand_points()
+    update_weiyounuoke_hand_add_button_state()
+
+
+    # 为 beidun_hand_entries 添加 UI，类似于 tonghu
+    beidun_hand_entries = []
+    beidun_hand_bait_entries = []
+    beidun_hand_meters_entries = []
+    beidun_hand_id_selectors = []
+
+    beidun_hand_container_row = row
+    beidun_hand_container = ttk.Frame(frame_fishing_hand)
+    beidun_hand_container.grid(row=row, column=0, columnspan=2, sticky="w", pady=0, padx=0)
+    row += 1
+
+    def save_beidun_hand_meters(key, value):
+        config.beidun_hand_points[key]["meters"] = value
+        save_config_to_file()
+
+    def refresh_beidun_hand_point_options():
+        used = {var.get() for _, var, _ in beidun_hand_id_selectors if var.get()}
+        for combo, var, idx in beidun_hand_id_selectors:
+            current = var.get()
+            values = [p for p in beidun_hand_available_points if p not in used or p == current]
+            combo['values'] = values
+        if not config.beidun_hand_points:
+            for combo, _, _ in beidun_hand_id_selectors:
+                combo['values'] = []
+
+    def render_beidun_hand_points():
+        for widget in beidun_hand_container.winfo_children():
+            widget.destroy()
+        beidun_hand_entries.clear()
+        beidun_hand_bait_entries.clear()
+        beidun_hand_meters_entries.clear()
+        beidun_hand_id_selectors.clear()
+
+        if not config.beidun_hand_points:
+            ttk.Label(beidun_hand_container, text="暂无北顿点位配置").grid(row=0, column=0, sticky="w")
+            return
+
+        row_frame = None
+        for idx, point in enumerate(config.beidun_hand_points):
+            if idx % 3 == 0:
+                row_frame = ttk.Frame(beidun_hand_container)
+                row_frame.grid(row=idx // 3, column=0, sticky="w", pady=0, padx=0)
+
+            group_frame = ttk.Frame(row_frame)
+            group_frame.grid(column=idx % 3, row=0, sticky="w", padx=0)
+
+            # 点位编号下拉框
+            ttk.Label(group_frame, text="点位编号").grid(row=0, column=0, sticky="w", pady=2, padx=2)
+            point_var = tk.StringVar(value=point['point_id'])
+            point_selector = ttk.Combobox(
+                group_frame,
+                textvariable=point_var,
+                values=[p for p in beidun_hand_available_points if p not in [pt['point_id'] for pt in config.beidun_hand_points if pt != point]],
+                state="readonly",
+                width=12,
+                font=("Microsoft YaHei", 8)
+            )
+            point_selector.grid(row=0, column=1, sticky="w", pady=2, padx=2)
+            point_var.trace_add("write", lambda *a, v=point_var, i=idx: [config.beidun_hand_points[i].update({'point_id': v.get()}), refresh_beidun_hand_point_options(), save_config_to_file()])
+            beidun_hand_id_selectors.append((point_selector, point_var, idx))
+
+            # 删除按钮
+            ttk.Button(
+                group_frame,
+                text="删除",
+                style="Small.TButton",
+                command=lambda i=idx: [config.beidun_hand_points.pop(i), save_config_to_file(), render_beidun_hand_points(), update_beidun_hand_add_button_state()]
+            ).grid(row=1, column=0, columnspan=2, pady=2)
+
+    def add_beidun_hand_point():
+        if len(config.beidun_hand_points) < 3:
+            used_points = [p["point_id"] for p in config.beidun_hand_points]
+            for point_id in beidun_hand_available_points:
+                if point_id not in used_points:
+                    config.beidun_hand_points.append({"point_id": point_id})
+                    save_config_to_file()
+                    render_beidun_hand_points()
+                    break
+            else:
+                logger.warning("无可用点位可添加")
+        else:
+            logger.warning("已达到最大点位数量（3个）")
+
+    beidun_hand_add_button = ttk.Button(
+        frame_fishing_hand,
+        text="添加北顿手点位",
+        style="Small.TButton",
+        command=lambda: [add_beidun_hand_point(), update_beidun_hand_add_button_state()]
+    )
+    beidun_hand_add_button.grid(row=row, column=0, columnspan=2, pady=2, sticky="w")
+    row += 1
+
+    def update_beidun_hand_add_button_state():
+        if len(config.beidun_hand_points) >= 3:
+            beidun_hand_add_button.config(state="disabled")
+        else:
+            beidun_hand_add_button.config(state="normal")
+
+    # 刷新北顿手点位下拉框
+    render_beidun_hand_points()
+    update_beidun_hand_add_button_state()
+
+
+
+
 
     # Tab 2: 水底和路亚钓鱼参数
     tab_fishing_params = ttk.Frame(notebook)
@@ -947,7 +1254,8 @@ def launch_config_window():
         "仅水底模式卡米数",
         config.only_bottom_meters,
         lambda v: setattr(config, "only_bottom_meters", int(v) if v.isdigit() else config.only_bottom_meters),
-        row
+        row,
+        tooltip_text="会影响仅水底模式的抛竿力度"
     )
 
     bottom_wait_time_var, bottom_wait_time_entry, row = create_labeled_entry(
@@ -955,7 +1263,8 @@ def launch_config_window():
         "每轮拿竿间隔(s)",
         config.bottom_wait_time,
         lambda v: setattr(config, "bottom_wait_time", int(v) if v.isdigit() else config.bottom_wait_time),
-        row
+        row,
+        tooltip_text="依次拿起三根杆子后为一轮，每轮间隔的时间"
     )
 
     dig_bait_tool_name_var, dig_bait_tool_name_entry, row = create_labeled_entry(
@@ -963,7 +1272,8 @@ def launch_config_window():
         "挖饵的工具名称",
         config.dig_bait_tool_name,
         lambda v: setattr(config, "dig_bait_tool_name", v),
-        row
+        row,
+        tooltip_text="挖饵的铲子名称"
     )
 
 
@@ -984,17 +1294,6 @@ def launch_config_window():
         lambda v: [setattr(config, "bottom_map", bottom_map_options.get(v, 0)), save_config_to_file(), update_fields_state()],
         row
     )
-
-    #点位变量
-    #水底
-    laoao_available_points = ["48,28", "23,67", "25,41", "42,32", "36,28", "35,29","20,34","35,58","23,45","09,50","27,27", "67,59_laoao","27,54"]  # 老奥点位
-    tonghu_available_points = ["66,55", "56,50", "67,59", "37,32", "44,34", "67,58", "66,59"]  # 铜湖点位
-    hupo_available_points = []  # 琥珀湖点位
-    ahetubahe_available_points = []  # 阿赫图巴赫点位
-    weiyounuoke_mhl_available_points = ["99,121"] # 惟有诺克河-梅花鲈点位
-    #路亚
-    baihe_available_points = ["71,37", "66,28", "65,26", "73,45", "73,59"]  # 白河点位
-    aier_available_points = ["65,93"]  # 艾尔克湖点位
 
     tonghu_entries = []
     tonghu_bait_entries = []
@@ -1735,9 +2034,9 @@ def launch_config_window():
             add_button.grid(row=row+1, column=0, columnspan=2, pady=0, sticky="w")
 
         def hide_all_containers():
-            for c in [laoao_container, hupo_container, tonghu_container, ahetubahe_container,weiyounuoke_mhl_container, baihe_container, aier_container]:
+            for c in [laoao_container, hupo_container, tonghu_container, ahetubahe_container,weiyounuoke_mhl_container, baihe_container, aier_container,weiyounuoke_hand_container, beidun_hand_container]:
                 c.grid_remove()
-            for b in [laoao_add_button, hupo_add_button, tonghu_add_button, ahetubahe_add_button,weiyounuoke_mhl_add_button, baihe_add_button, aier_add_button]:
+            for b in [laoao_add_button, hupo_add_button, tonghu_add_button, ahetubahe_add_button,weiyounuoke_mhl_add_button, baihe_add_button, aier_add_button, weiyounuoke_hand_add_button, beidun_hand_add_button]:
                 b.grid_remove()
 
         # ------------------ 更新控件状态 ------------------
@@ -1755,6 +2054,11 @@ def launch_config_window():
                 "normal" if is_lure_mode and config.lure_map == 1 else "disabled")
         set_state([], [], [], [], aier_add_button,
                 "normal" if is_lure_mode and config.lure_map == 2 else "disabled")
+        
+        set_state([], [], [], [], weiyounuoke_hand_add_button,
+                "normal" if config.hand_rod_fishing_map == 1 else "disabled")
+        set_state([], [], [], [], beidun_hand_add_button,
+                "normal" if config.hand_rod_fishing_map == 2 else "disabled")
 
         # ------------------ 更新容器可见性 ------------------
         hide_all_containers()
@@ -1775,6 +2079,11 @@ def launch_config_window():
             show_container(baihe_container, baihe_add_button, baihe_container_row)
         elif is_lure_mode and config.lure_map == 2:
             show_container(aier_container, aier_add_button, aier_container_row)
+
+        if config.hand_rod_fishing_map == 1:
+            show_container(weiyounuoke_hand_container, weiyounuoke_hand_add_button, weiyounuoke_hand_container_row)
+        elif config.hand_rod_fishing_map == 2:
+            show_container(beidun_hand_container, beidun_hand_add_button, beidun_hand_container_row)
 
     #----------------------------路亚--------------------------------
     frame_fishing_params_lure = ttk.LabelFrame(tab_fishing_params, text="路亚", padding=5)
@@ -2324,7 +2633,7 @@ def launch_config_window():
     status_type_map = {
         "轻微": 1,
         "强烈": 2,
-        "阶梯": 3,
+        "jig": 3,
         "随机": 4,
         "摆烂": 5,
         "自定义": 6,
@@ -2430,7 +2739,8 @@ def launch_config_window():
     "沉底后收线时间 (s)",
     config.reeling_time_after_status_detected,
     lambda v: setattr(config, "reeling_time_after_status_detected", float(v) if v.replace('.', '', 1).isdigit() else config.reeling_time_after_status_detected),
-    row
+    row,
+    tooltip_text="第一次出现底部的运动后会收线，该值为收线的时长"
     )
 
     sleep_when_on_status_var, sleep_when_on_status_entry, row = create_labeled_entry(
@@ -2438,7 +2748,8 @@ def launch_config_window():
     "沉底后延迟 (s)",
     config.sleep_when_on_status,
     lambda v: setattr(config, "sleep_when_on_status", float(v) if v.replace('.', '', 1).isdigit() else config.sleep_when_on_status),
-    row
+    row,
+    tooltip_text="出现底部的运动后延迟多久锁轮"
     )
 
     # 根据初始类型设置禁用状态
@@ -2531,15 +2842,15 @@ def launch_config_window():
     cb_fly_ticket.pack(side="left", padx=4)
     def trace_fly_ticket(*args):
         setattr(config, "is_fly_ticket", bool(is_fly_ticket_var.get()))
-        # 同步控制是否使用飞机杆的可用状态
+        # 同步控制是否使用飞机竿的可用状态
         state = "normal" if is_fly_ticket_var.get() else "disabled"
         cb_fly_rod.config(state=state)
         save_config_to_file()
     is_fly_ticket_var.trace_add("write", trace_fly_ticket)
 
-    # 是否使用飞机杆
+    # 是否使用飞机竿
     is_fly_rod_var = tk.BooleanVar(value=getattr(config, "is_fly_rod", False))
-    cb_fly_rod = ttk.Checkbutton(fly_frame, text="是否使用飞机杆", variable=is_fly_rod_var)
+    cb_fly_rod = ttk.Checkbutton(fly_frame, text="是否使用飞机竿", variable=is_fly_rod_var)
     cb_fly_rod.pack(side="left", padx=4)
     def trace_fly_rod(*args):
         setattr(config, "is_fly_rod", bool(is_fly_rod_var.get()))

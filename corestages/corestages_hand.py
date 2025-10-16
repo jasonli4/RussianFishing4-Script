@@ -35,6 +35,7 @@ def turn_and_walk(turn_value, walk_time, sleep_min=0.23, sleep_max=0.33):
         utils.key_up('w')
         utils.key_up('Left Shift')
 
+#唯有诺克河手竿点位
 def position_72_85():
     route = [
         (1080, 6),
@@ -75,6 +76,7 @@ def position_87_103():
             interrupt_checker=lambda: getattr(config, 'running', True)
         )        
 
+#北顿手竿点位
 def position_96_137():
     route = [
         (-650, 4),
@@ -146,18 +148,48 @@ def run_loop():
     elif config.hand_rod_fishing_mode ==2:
         shougan()
 
+# 全天手竿钓鱼
+def all_day_hand_rod_fishing():
+    """全天手竿钓鱼"""
+    logger.info("🎣 开始全天手竿")
+    if config.stop_event.is_set():
+        return
+    goToMap()
+    if config.stop_event.is_set():
+        return
+    #前往目的地
+    sleep_time(random.uniform(1.41, 1.52))
+    hand_next_position()
+
+    #模式为1，计时开始
+    if config.hand_rod_fishing_mode ==1:
+        config.current_fish_start_time=time.time()    
+    # 钓鱼
+    sleep_time(random.uniform(1.41, 1.52))
+    shougan()
+
+
 def goToMap():
 
+    fish_quantity=fish_capacity=fish_count=None
     while not config.stop_event.is_set():
+        """
+        是否在游戏界面
+        """
         if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or navigator.get_current_position():
             logger.info("已在游戏界面。")
+            fish_quantity = get_fish_count_other()
+            if fish_quantity:
+                fish_count, fish_capacity = fish_quantity
+                logger.info(f"鱼护当前数量: {fish_count}, 容量: {fish_capacity}")
+            else:
+                continue
+            sleep_time(random.uniform(0.23, 0.24))
+            utils.press_key('esc')
+            sleep_time(random.uniform(0.25, 0.26))
             break
-        sleep_time(random.uniform(0.4, 0.5))
         
-    #进入游戏菜单
-    sleep_time(random.uniform(0.23, 0.24))
-    utils.press_key('esc')
-    sleep_time(random.uniform(0.55, 0.56))
+        sleep_time(random.uniform(0.4, 0.5))
 
     if config.hand_rod_fishing_map==1:
         mapName='惟有诺克河'
@@ -168,13 +200,88 @@ def goToMap():
     
     #查看是不是在指定的地图中
     map_name1 = ocr.recognize_text_from_black_bg_first(region=config.MapPickerRegionScreenshotFly)
-    map_name2 = ocr.recognize_text_from_black_bg_first(region=config.MapPickerRegionScreenshot)
+    map_name2 = ocr.recognize_text_from_black_bg_first(region=config.MapPickerRegionScreenshot)    
+   
+    #先把鱼卖了
+    if fish_count and fish_count>0:
+        relogin()
+        if (map_name1 and '惟有诺克河' in map_name1.replace(" ", "") ) or (map_name2 and '惟有诺克河' in map_name2.replace(" ", "")) :
+            #转向咖啡厅            
+            sleep_time(random.uniform(1.23, 1.33))
+            if config.stop_event.is_set():
+                return
+            route = [
+                (900, 2)
+            ]
+            for turn, walk in route:
+                turn_and_walk(turn, walk)
+            #交任务
+            if config.stop_event.is_set():
+                return
+            coffee_shop_task_func()
+            #转向鱼市               
+            sleep_time(random.uniform(1.23, 1.33))
+            if config.stop_event.is_set():
+                return
+            route = [
+                (-1400, 2)
+            ]
+            for turn, walk in route:
+                turn_and_walk(turn, walk)
+            #卖鱼                
+            if config.stop_event.is_set():
+                return
+            sell_fish_func()
+            # sleep_time(random.uniform(1.23, 1.33))
+        
+        if (map_name1 and '北顿涅茨河' in map_name1.replace(" ", "") ) or (map_name2 and '北顿涅茨河' in map_name2.replace(" ", "")) :
+
+            #去咖啡厅
+            route = [
+                (280, 4),
+                (-600, 0)
+            ]
+
+            for turn, walk in route:
+                turn_and_walk(turn, walk)
+            
+            # #交任务
+            if config.stop_event.is_set():
+                return
+            coffee_shop_task_func()
+
+            #前往鱼市
+            route = [
+                (-800, 5.3),
+            ]
+
+            for turn, walk in route:
+                turn_and_walk(turn, walk)
+            
+            # #卖鱼
+            if config.stop_event.is_set():
+                return
+            sell_fish_func()    
+            
+
     if (map_name1 and mapName in map_name1.replace(" ", "") ) or (map_name2 and mapName in map_name2.replace(" ", "")) :
         logger.info("✅ 当前已在指定地图中。")
         #小退游戏还原状态
         relogin()
     else:
-        #进入指定的地图中
+        if fish_count and fish_count > 0:
+            #进入菜单页面
+            while not config.stop_event.is_set():
+                """
+                是否在游戏界面
+                """
+                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or navigator.get_current_position():
+                    sleep_time(random.uniform(0.23, 0.24))
+                    utils.press_key('esc')
+                    sleep_time(random.uniform(0.25, 0.26))
+                    break
+                sleep_time(random.uniform(0.4, 0.5))
+
         #进入地图选择界面
         if config.stop_event.is_set():
             return
@@ -199,84 +306,27 @@ def goToMap():
         sleep_time(random.uniform(0.23, 0.24))
         utils.click_left_mouse()
         sleep_time(random.uniform(0.53, 0.54))
-
-        if utils.check_template_in_region(config.MapLimitRegionScreenshot, "maplimit.png"):
-            root = tk.Tk()
-            root.withdraw()
-            root.attributes("-topmost", True)  # 设置最前
-            messagebox.showwarning("警告", f"进入地图出错，查看等级限制！", parent=root)
-            root.destroy()  # 弹窗后销毁隐藏窗口
-            stop_program() 
-
         #判断是否进图成功
         while not config.stop_event.is_set():
+            if utils.find_template_in_regions(config.MapLimitRegionScreenshot, "maplimit.png"):
+                root = tk.Tk()
+                root.withdraw()
+                root.attributes("-topmost", True)  # 设置最前
+                messagebox.showwarning("警告", f"进入地图出错，查看等级限制！", parent=root)
+                root.destroy()  # 弹窗后销毁隐藏窗口
+                stop_program()             
             if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or navigator.get_current_position():
                 logger.info("进入地图成功。")
                 break
             sleep_time(random.uniform(0.4, 0.5))
 
-    #卖鱼
-    #1.查看鱼护数量
-    fish_quantity = get_fish_count_other()
-    if fish_quantity:
-        fish_count, fish_capacity = fish_quantity
-        logger.info(f"鱼护当前数量: {fish_count}, 容量: {fish_capacity}")
-        if fish_count > 0:
-            if config.hand_rod_fishing_map==1:
-                #咖啡厅任务
-                if config.stop_event.is_set():
-                    return
-                sleep_time(random.uniform(1.23, 1.33))
-                utils.move_mouse_relative_smooth(-500, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-                
-                if config.stop_event.is_set():
-                    return
-                sell_fish_func()
-
-                if config.stop_event.is_set():
-                    return
-                sleep_time(random.uniform(1.23, 1.33))
-                utils.move_mouse_relative_smooth(500, 0, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
-                sleep_time(random.uniform(1.23, 1.33))
-            
-            elif config.hand_rod_fishing_map==2:
-                #去咖啡厅
-                route = [
-                    (280, 4),
-                    (-600, 0)
-                ]
-
-                for turn, walk in route:
-                    turn_and_walk(turn, walk)
-                
-                # #交任务
-                if config.stop_event.is_set():
-                    return
-                coffee_shop_task_func()
-
-                #前往鱼市
-                route = [
-                    (-800, 5.3),
-                ]
-
-                for turn, walk in route:
-                    turn_and_walk(turn, walk)
-                
-                # #卖鱼
-                if config.stop_event.is_set():
-                    return
-                sell_fish_func()    
-                
-                #还原视角和位置
-                relogin()                
 
 def hand_next_position():
     
     if config.hand_rod_fishing_map==1:
-        positions=[{"point_id":"7285"},{"point_id":"87103"}]
+        positions=config.weiyounuoke_hand_points
     elif config.hand_rod_fishing_map==2:
-        positions=[{"point_id":"96137"},{"point_id":"99133"},{"point_id":"72160"}]
-        # positions=[{"point_id":"72160"}]
+        positions=config.beidun_hand_points
 
 
     # 检查点位列表是否为空
@@ -296,7 +346,8 @@ def hand_next_position():
     next_index = (last_index + 1) % len(positions)
 
     item=positions[next_index]
-    func=f"position_{item['point_id'][:2]}_{item['point_id'][2:]}"
+    a, b = item["point_id"].split(",")
+    func = f"position_{a}_{b}"
     func=getattr(sys.modules[__name__], func)
     # meters=item["meters"]
 
@@ -310,39 +361,15 @@ def hand_next_position():
     # return int(meters)
 
 def fish_mode_change():
-    """
-    根据 auto_mode 判断是否需要重启
-    """
-    now = time.time()
 
     # === 运行满 1 小时后重启 ===
     if config.hand_rod_fishing_mode ==1:
-        elapsed = (now - config.current_fish_start_time)/ 60  # 转分钟
+        elapsed = (time.time() - config.current_fish_start_time)/ 60  # 转分钟
         if elapsed >= 60:
             logger.info("⏰ 系统时间已运行 %.1f 分钟，执行重启！（auto_mode=%s）", elapsed, config.auto_mode)
             config.need_restart = True
             return True
         return False
-
-# 全天手杆钓鱼
-def all_day_hand_rod_fishing():
-    """全天手杆钓鱼"""
-    logger.info("🎣 开始全天手杆")
-    if config.stop_event.is_set():
-        return
-    goToMap()
-    if config.stop_event.is_set():
-        return
-    #前往目的地
-    sleep_time(random.uniform(1.41, 1.52))
-    hand_next_position()
-
-    #模式为0，1，计时开始
-    if config.hand_rod_fishing_mode ==1:
-        config.current_fish_start_time=time.time()    
-    # 钓鱼
-    sleep_time(random.uniform(1.41, 1.52))
-    shougan()
 
 def reconfigure_rod():
     """竿子状态异常，重新配置鱼竿"""

@@ -652,40 +652,51 @@ def fish_mode_change():
         logger.debug("OCR 未识别到有效时间，跳过模式检测。")
         return False
 
-    game_hour, game_minute = divmod(minutes, 60)
+    # game_hour, game_minute = divmod(minutes, 60)
 
-    # ===== auto_mode 0 / 1 重启逻辑 =====
+    # === 运行满 1 小时后重启 ===
     if config.auto_mode in (0, 1):
-        restart = False
-        if config.auto_mode == 0:
-            # 14:30 ~ 16:30
-            if ((game_hour == 14 and game_minute >= 30) or (game_hour == 15) or (game_hour == 16 and game_minute <= 30)):
-                restart = True
-        elif config.auto_mode == 1:
-            # 22:00 ~ 24:00
-            if game_hour >= 22 and game_hour < 24:
-                restart = True
-
-        if restart and not getattr(config, "has_restarted_today", False):
-            logger.info("⏰ 游戏时间 %02d:%02d 处于重启区间，准备等待1-5分钟后重启！（auto_mode=%s）",
-                        game_hour, game_minute, config.auto_mode)
-
-            wait_time = random.uniform(60, 300)  # 1-5 分钟
-            logger.info("开始等待 %.2f 秒", wait_time)
-            sleep_time(wait_time)
-
-            logger.info("等待结束，执行重启")
-            config.has_restarted_today = True
+        elapsed = (time.time() - config.current_fish_start_time)/ 60  # 转分钟
+        if elapsed >= 60:
+            logger.info("⏰ 系统时间已运行 %.1f 分钟，执行重启！（auto_mode=%s）", elapsed, config.auto_mode)
             utils.stop_program()
             utils.delayed_start()
             return True
-
-        # 超过时间段重置标志
-        if (config.auto_mode == 0 and (game_hour > 16 or (game_hour == 16 and game_minute > 30))) \
-                or (config.auto_mode == 1 and game_hour >= 0 and game_hour < 22):
-            config.has_restarted_today = False
-
         return False
+
+
+    # # ===== auto_mode 0 / 1 重启逻辑 =====
+    # if config.auto_mode in (0, 1):
+    #     restart = False
+    #     if config.auto_mode == 0:
+    #         # 14:30 ~ 16:30
+    #         if ((game_hour == 14 and game_minute >= 30) or (game_hour == 15) or (game_hour == 16 and game_minute <= 30)):
+    #             restart = True
+    #     elif config.auto_mode == 1:
+    #         # 22:00 ~ 24:00
+    #         if game_hour >= 22 and game_hour < 24:
+    #             restart = True
+
+    #     if restart and not getattr(config, "has_restarted_today", False):
+    #         logger.info("⏰ 游戏时间 %02d:%02d 处于重启区间，准备等待1-5分钟后重启！（auto_mode=%s）",
+    #                     game_hour, game_minute, config.auto_mode)
+
+    #         wait_time = random.uniform(60, 300)  # 1-5 分钟
+    #         logger.info("开始等待 %.2f 秒", wait_time)
+    #         sleep_time(wait_time)
+
+    #         logger.info("等待结束，执行重启")
+    #         config.has_restarted_today = True
+    #         utils.stop_program()
+    #         utils.delayed_start()
+    #         return True
+
+    #     # 超过时间段重置标志
+    #     if (config.auto_mode == 0 and (game_hour > 16 or (game_hour == 16 and game_minute > 30))) \
+    #             or (config.auto_mode == 1 and game_hour >= 0 and game_hour < 22):
+    #         config.has_restarted_today = False
+
+    #     return False
 
     # ===== auto_mode 2: 白天/晚上切换逻辑 =====
     elif config.auto_mode == 2:
@@ -957,16 +968,15 @@ def goToMap():
         utils.click_left_mouse()
         sleep_time(random.uniform(0.53, 0.54))
 
-        if utils.check_template_in_region(config.MapLimitRegionScreenshot, "maplimit.png"):
-            root = tk.Tk()
-            root.withdraw()
-            root.attributes("-topmost", True)  # 设置最前
-            messagebox.showwarning("警告", f"进入地图出错，查看等级限制！", parent=root)
-            root.destroy()  # 弹窗后销毁隐藏窗口
-            stop_program() 
-
         #判断是否进图成功
         while not config.stop_event.is_set():
+            if utils.find_template_in_regions(config.MapLimitRegionScreenshot, "maplimit.png"):
+                root = tk.Tk()
+                root.withdraw()
+                root.attributes("-topmost", True)  # 设置最前
+                messagebox.showwarning("警告", f"进入地图出错，查看等级限制！", parent=root)
+                root.destroy()  # 弹窗后销毁隐藏窗口
+                stop_program() 
             if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or navigator.get_current_position():
                 break
             sleep_time(random.uniform(0.4, 0.5))
@@ -1173,7 +1183,10 @@ def fish_bottom():
                 t=1.8*(random.uniform(meters*5+5,meters*5+10)/100)
                 utils.click_left_mouse(t)
                 sleep_time(random.uniform(t+1, t+1.1))
-
+    
+    #模式为0，计时开始
+    if config.auto_mode==0:
+        config.current_fish_start_time=time.time()   
     #开始钓鱼    
     bottom(meters)
 
@@ -1210,7 +1223,10 @@ def fish_lure():
     sleep_time(random.uniform(0.41, 0.52))
     if config.stop_event.is_set():
         return
-
+    
+    #模式为1，计时开始
+    if config.auto_mode ==1:
+        config.current_fish_start_time=time.time()   
     #开始路亚钓鱼
     lure()
     
