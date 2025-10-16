@@ -110,8 +110,10 @@ bottom_reel_speed=50
 bottom_reel_friction=25
 #放下竿子的按键
 put_down_rod_key='x'
-#auto_mode为3的时候的卡米数
+#仅水底模式的卡米数
 only_bottom_meters=10
+#水底模式拿竿时间间隔
+bottom_wait_time=0
 #挖饵的工具名称
 dig_bait_tool_name='铲'
 #水底地图点位

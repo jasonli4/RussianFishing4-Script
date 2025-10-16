@@ -85,6 +85,7 @@ def save_config_to_file():
         "lure_rod_name": config.lure_rod_name,
         "auto_mode": config.auto_mode,
         "only_bottom_meters": config.only_bottom_meters,
+        "bottom_wait_time": config.bottom_wait_time,
         "dig_bait_tool_name": config.dig_bait_tool_name,
         "game_mode": config.game_mode,
         "steam_path": config.steam_path,
@@ -182,6 +183,7 @@ def load_config_from_file():
         config.lure_rod_name = data.get("lure_rod_name", getattr(config, "lure_rod_name", 'S68ML'))
         config.auto_mode = data.get("auto_mode", getattr(config, "auto_mode", 3))
         config.only_bottom_meters = data.get("only_bottom_meters", getattr(config, "only_bottom_meters", 10))
+        config.bottom_wait_time = data.get("bottom_wait_time", getattr(config, "bottom_wait_time", 0))
         config.dig_bait_tool_name = data.get("dig_bait_tool_name", getattr(config, "dig_bait_tool_name", '铲'))
         config.game_mode = data.get("game_mode", getattr(config, "game_mode", 1))
         config.steam_path = data.get("steam_path", getattr(config, "steam_path", r'C:\Program Files (x86)\Steam\steam.exe'))
@@ -304,7 +306,7 @@ def launch_config_window():
     load_config_from_file()
 
     root = tk.Tk()
-    root.title("钓鱼脚本")
+    root.title("钓鱼脚本v1.0.4")
     root.configure(bg="#f0f0f0")  # 设置窗口背景色为浅灰
 
     geometry = load_window_geometry()
@@ -412,6 +414,7 @@ def launch_config_window():
         bottom_reel_friction_var.set(str(config.bottom_reel_friction))
         put_down_rod_key_var.set(config.put_down_rod_key)
         only_bottom_meters_var.set(str(config.only_bottom_meters))
+        bottom_wait_time_var.set(str(config.bottom_wait_time))
         dig_bait_tool_name_var.set(config.dig_bait_tool_name)
         bottom_map_var.set(get_bottom_map_text(config.bottom_map))
 
@@ -944,6 +947,14 @@ def launch_config_window():
         "仅水底模式卡米数",
         config.only_bottom_meters,
         lambda v: setattr(config, "only_bottom_meters", int(v) if v.isdigit() else config.only_bottom_meters),
+        row
+    )
+
+    bottom_wait_time_var, bottom_wait_time_entry, row = create_labeled_entry(
+        frame_fishing_params_bottom,
+        "拿竿时间间隔(s)",
+        config.bottom_wait_time,
+        lambda v: setattr(config, "bottom_wait_time", int(v) if v.isdigit() else config.bottom_wait_time),
         row
     )
 

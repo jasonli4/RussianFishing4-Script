@@ -1446,7 +1446,7 @@ def bottom(meters):
 
         # 如果没咬钩 → 放下竿子
         if not fish_bite_detected:
-            # utils.press_key(config.put_down_rod_key)
+            utils.press_key(config.put_down_rod_key)
             return
 
         # 进入累计阶段，不受 max_bite_wait_time 限制
@@ -1456,7 +1456,7 @@ def bottom(meters):
             bite_still_detected = utils.check_template_in_region(config.region_fish_bite, 'fish_bite.png')
             if not bite_still_detected:
                 # 鱼跑掉，放下竿子并退出
-                # utils.press_key(config.put_down_rod_key)
+                utils.press_key(config.put_down_rod_key)
                 return
 
             # 计算累计时间
@@ -1471,13 +1471,15 @@ def bottom(meters):
             sleep_time(random.uniform(0.01, 0.02))  # 短暂休眠，继续累计
 
     actions = [1, 2, 3]
-
+    last_run = 0  
     while not config.stop_event.is_set():
-        random.shuffle(actions)
-        for a in actions:
-            if config.stop_event.is_set():
-                break
-            bottom_core(a)
+        if time.time() - last_run >= config.bottom_wait_time:
+            random.shuffle(actions)
+            for a in actions:
+                if config.stop_event.is_set():
+                    break
+                bottom_core(a)
+            last_run = time.time()
         if fish_mode_change():
             break
         #挖饵

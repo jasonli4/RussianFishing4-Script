@@ -6,7 +6,7 @@ import tkinter as tk
 import pyperclip
 import config
 from logger import logger
-from  stages import navigator
+from stages import navigator
 from stages.check_fishnet_status import get_fish_count_other
 from stages.coffee_shop_task import coffee_shop_task_func
 from stages.relogin import relogin
