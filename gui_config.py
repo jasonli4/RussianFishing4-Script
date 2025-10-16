@@ -952,7 +952,7 @@ def launch_config_window():
 
     bottom_wait_time_var, bottom_wait_time_entry, row = create_labeled_entry(
         frame_fishing_params_bottom,
-        "拿竿时间间隔(s)",
+        "每轮拿竿间隔(s)",
         config.bottom_wait_time,
         lambda v: setattr(config, "bottom_wait_time", int(v) if v.isdigit() else config.bottom_wait_time),
         row
