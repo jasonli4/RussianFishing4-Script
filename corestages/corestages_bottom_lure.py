@@ -652,51 +652,52 @@ def fish_mode_change():
         logger.debug("OCR 未识别到有效时间，跳过模式检测。")
         return False
 
-    # game_hour, game_minute = divmod(minutes, 60)
+    game_hour, game_minute = divmod(minutes, 60)
 
     # === 运行满 1 小时后重启 ===
     if config.auto_mode in (0, 1):
-        elapsed = (time.time() - config.current_fish_start_time)/ 60  # 转分钟
-        if elapsed >= 60:
-            logger.info("⏰ 系统时间已运行 %.1f 分钟，执行重启！（auto_mode=%s）", elapsed, config.auto_mode)
-            utils.stop_program()
-            utils.delayed_start()
-            return True
-        return False
-
+        if not config.bottom_map in (0,4):
+            elapsed = (time.time() - config.current_fish_start_time)/ 60  # 转分钟
+            if elapsed >= 60:
+                logger.info("⏰ 系统时间已运行 %.1f 分钟，执行重启！（auto_mode=%s）", elapsed, config.auto_mode)
+                utils.stop_program()
+                utils.delayed_start()
+                return True
+            return False
+        else:
 
     # # ===== auto_mode 0 / 1 重启逻辑 =====
     # if config.auto_mode in (0, 1):
-    #     restart = False
-    #     if config.auto_mode == 0:
-    #         # 14:30 ~ 16:30
-    #         if ((game_hour == 14 and game_minute >= 30) or (game_hour == 15) or (game_hour == 16 and game_minute <= 30)):
-    #             restart = True
-    #     elif config.auto_mode == 1:
-    #         # 22:00 ~ 24:00
-    #         if game_hour >= 22 and game_hour < 24:
-    #             restart = True
+            restart = False
+            if config.auto_mode == 0:
+                # 14:30 ~ 16:30
+                if ((game_hour == 14 and game_minute >= 30) or (game_hour == 15) or (game_hour == 16 and game_minute <= 30)):
+                    restart = True
+            elif config.auto_mode == 1:
+                # 22:00 ~ 24:00
+                if game_hour >= 22 and game_hour < 24:
+                    restart = True
 
-    #     if restart and not getattr(config, "has_restarted_today", False):
-    #         logger.info("⏰ 游戏时间 %02d:%02d 处于重启区间，准备等待1-5分钟后重启！（auto_mode=%s）",
-    #                     game_hour, game_minute, config.auto_mode)
+            if restart and not getattr(config, "has_restarted_today", False):
+                logger.info("⏰ 游戏时间 %02d:%02d 处于重启区间，准备等待1-5分钟后重启！（auto_mode=%s）",
+                            game_hour, game_minute, config.auto_mode)
 
-    #         wait_time = random.uniform(60, 300)  # 1-5 分钟
-    #         logger.info("开始等待 %.2f 秒", wait_time)
-    #         sleep_time(wait_time)
+                wait_time = random.uniform(60, 300)  # 1-5 分钟
+                logger.info("开始等待 %.2f 秒", wait_time)
+                sleep_time(wait_time)
 
-    #         logger.info("等待结束，执行重启")
-    #         config.has_restarted_today = True
-    #         utils.stop_program()
-    #         utils.delayed_start()
-    #         return True
+                logger.info("等待结束，执行重启")
+                config.has_restarted_today = True
+                utils.stop_program()
+                utils.delayed_start()
+                return True
 
-    #     # 超过时间段重置标志
-    #     if (config.auto_mode == 0 and (game_hour > 16 or (game_hour == 16 and game_minute > 30))) \
-    #             or (config.auto_mode == 1 and game_hour >= 0 and game_hour < 22):
-    #         config.has_restarted_today = False
+            # 超过时间段重置标志
+            if (config.auto_mode == 0 and (game_hour > 16 or (game_hour == 16 and game_minute > 30))) \
+                    or (config.auto_mode == 1 and game_hour >= 0 and game_hour < 22):
+                config.has_restarted_today = False
 
-    #     return False
+            return False
 
     # ===== auto_mode 2: 白天/晚上切换逻辑 =====
     elif config.auto_mode == 2:
