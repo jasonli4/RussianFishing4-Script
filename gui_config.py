@@ -359,7 +359,7 @@ def launch_config_window():
     load_config_from_file()
 
     root = tk.Tk()
-    root.title("钓鱼脚本v1.0.5")
+    root.title("钓鱼脚本v1.0.6")
     root.configure(bg="#f0f0f0")  # 设置窗口背景色为浅灰
 
     geometry = load_window_geometry()
