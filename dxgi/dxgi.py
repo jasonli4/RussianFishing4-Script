@@ -37,7 +37,7 @@ dxgi_lock = threading.Lock()
 # 初始化 DXGI
 if not dxgi.InitDuplicator():
     logger.error("初始化 DXGI 失败")
-    exit(1)
+    sys.exit(1)
 
 # 封装截图结果
 class DXGIScreenshot:
