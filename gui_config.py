@@ -359,14 +359,14 @@ def launch_config_window():
     load_config_from_file()
 
     root = tk.Tk()
-    root.title("钓鱼脚本")
+    root.title("钓鱼脚本v1.0.5")
     root.configure(bg="#f0f0f0")  # 设置窗口背景色为浅灰
 
     geometry = load_window_geometry()
     if geometry:
         root.geometry(geometry)
     else:
-        root.geometry("646x931")  # 略微增加宽度以改善布局
+        root.geometry("610x895+663+52")  # 略微增加宽度以改善布局
 
     def on_close():
         save_config_to_file()
