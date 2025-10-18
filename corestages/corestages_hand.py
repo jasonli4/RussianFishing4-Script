@@ -465,7 +465,7 @@ def shougan():
     total_mouse_movement = 0  # 记录总的鼠标x轴移动距离
     #抛竿
     def throw_rod():
-        if utils.check_template_in_region(config.region_hook_status,'handerror.png'):
+        if utils.check_template_in_region(config.region_hook_status,'handerror.png') or utils.check_template_in_region(region=config.region_check_assembly_area, template_path="assembly.png"):
             sleep_time(random.uniform(0.41, 0.52))
             reconfigure_rod()
         if utils.check_template_in_region(config.region_cast_rod,'cast_rod.png'):
