@@ -3118,6 +3118,33 @@ def launch_config_window():
     gui_handler.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s - %(message)s", "%H:%M:%S"))
     logger.addHandler(gui_handler)
 
+    def show_startup_banner():
+        banner_lines = [
+            "=" * 60,
+            "⚠️ 本项目为免费开源软件，仅供学习与交流使用！",
+            "禁止任何形式的商业用途或售卖行为。",
+            "项目地址：https://github.com/fyodorrss/RussianFishing4-Script",
+            "=" * 60,
+            ""
+        ]
+        
+        # 临时解除只读状态
+        text_log.config(state="normal")
+        
+        # 插入横幅
+        for line in banner_lines:
+            text_log.insert("end", line + "\n")
+        
+        # 自动滚动到最底部（可选）
+        text_log.see("end")
+        
+        # 再次设置为只读
+        text_log.config(state="disabled")
+
+    # 调用显示横幅
+    show_startup_banner()
+
+
     # === 状态栏：显示程序运行状态 ===
     status_bar = ttk.Label(root, text="", relief="sunken", anchor="w", padding=5, font=("Microsoft YaHei", 9))
     status_bar.pack(side="bottom", fill="x")

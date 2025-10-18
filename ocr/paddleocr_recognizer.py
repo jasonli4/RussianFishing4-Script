@@ -8,6 +8,7 @@ from typing import Optional, Tuple, List
 from paddleocr import PaddleOCR
 from logger import logger
 from dxgi import dxgi
+from utils import load_template
 
 def get_resource_path(relative_path):
     base_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
@@ -80,7 +81,7 @@ class PaddleocrRecognizer:
         img_cv = cv2.cvtColor(img_cv, cv2.COLOR_BGRA2BGR)
         gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
 
-        base_dir = os.path.dirname(os.path.abspath(__file__))
+        # base_dir = os.path.dirname(os.path.abspath(__file__))
 
         if fill_black:
             template_names = ["info_icon1.png", "info_icon2.png"]
@@ -88,7 +89,8 @@ class PaddleocrRecognizer:
             matched_areas = []
 
             for template_name in template_names:
-                full_path = os.path.join(base_dir, "images", template_name)
+                # full_path = os.path.join(base_dir, "images", template_name)
+                full_path = load_template(template_path=template_name)
                 if not os.path.exists(full_path):
                     self.logger.warning(f"[警告] 模板文件不存在: {full_path}")
                     continue
