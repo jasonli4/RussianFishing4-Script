@@ -204,5 +204,11 @@ pyinstaller --clean main_gpu.spec
 ## 贡献与反馈
 通过[GitHub Issues](https://github.com/fyodorrss/RussianFishing4-Script/issues)或[Pull Requests](https://github.com/fyodorrss/RussianFishing4-Script/pulls)提交问题或建议，并提供系统环境、日志和重现步骤。
 
-## 许可证
-本项目采用[MIT许可证](LICENSE)。DLL版权归mono所有，遵守其许可协议。
+
+## 许可证 / License
+
+本项目源代码采用 MIT 许可证（非商业使用），仅供学习与技术交流使用。  
+禁止用于任何形式的商业行为，包括但不限于出售、收费脚本或嵌入付费服务。  
+
+如需商业授权，请联系作者获得书面许可。  
+详见项目[LICENSE](LICENSE) 文件。
