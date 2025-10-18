@@ -189,6 +189,7 @@ pyinstaller --clean main_gpu.spec
 - 脚本运行期间，**请勿随意干扰**脚本操作。
 - 避免长时间挂机，建议配合手动操作。
 - 本脚本为自动化辅助工具，使用者需自行承担使用风险。
+- 本项目为开源/非商用项目，禁止用于任何形式的收费或商业用途。
 
 ## 语言支持
 目前仅支持简体中文，欢迎通过贡献代码支持多语言。
@@ -198,7 +199,7 @@ pyinstaller --clean main_gpu.spec
 
 **QQ群**：1044761397
 
-如果喜欢本项目，请点个Star⭐️！
+如果喜欢本项目，请点个Star⭐️支持！
 
 ## 贡献与反馈
 通过[GitHub Issues](https://github.com/fyodorrss/RussianFishing4-Script/issues)或[Pull Requests](https://github.com/fyodorrss/RussianFishing4-Script/pulls)提交问题或建议，并提供系统环境、日志和重现步骤。
