@@ -394,7 +394,7 @@ def reconfigure_rod():
     utils.press_key('v', 0.1)
     wait_random((0.81, 0.92))
     utils.move_mouse_random_in_region((1006, 129, 875, 927))
-    wait_random((0.81, 0.92))
+    wait_random((1.51, 1.62))
 
     # === 需要配置的部位 (region, 名称) ===
     parts = [
