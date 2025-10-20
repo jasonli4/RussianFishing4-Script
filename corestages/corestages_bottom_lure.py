@@ -1215,10 +1215,10 @@ def fish_lure():
     if config.stop_event.is_set():
         return
     #设置摩擦力
-    # adjust_reel_friction(config.lure_reel_friction)
-    # sleep_time(random.uniform(0.41, 0.52))
-    # if config.stop_event.is_set():
-        # return
+    adjust_reel_friction(config.lure_reel_friction)
+    sleep_time(random.uniform(0.41, 0.52))
+    if config.stop_event.is_set():
+        return
     # 设置卡米数
     # adjust_reel_meters(0)
     utils.move_mouse_relative_smooth(0, -620, duration=random.uniform(0.4, 0.6), steps=random.randint(30, 50), interrupt_checker=lambda: getattr(config, 'running', True))
