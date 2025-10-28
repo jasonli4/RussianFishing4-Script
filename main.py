@@ -1,4 +1,3 @@
-import random
 import time
 import keyboard
 import config
@@ -6,143 +5,107 @@ from logger import logger
 import utils
 from gui_config import launch_config_window  # ✅ GUI 配置窗口（Tkinter）
 
-# ✅ 守护线程：监视 need_restart 并执行重启
+# =========================
+# 🎯 常量定义
+# =========================
+MONITOR_INTERVAL = (1.0, 1.1)
+SHORT_WAIT = (0.23, 0.25)
+RELOGIN_WAIT = (2.2, 3.3)
+
+
+# =========================
+# 🧩 通用封装函数
+# =========================
+def click_random_region(region, label="区域"):
+    """在指定区域内随机点击"""
+    utils.move_mouse_random_in_region(region)
+    time.sleep(utils.human_like_uniform(*SHORT_WAIT))
+    utils.click_left_mouse()
+    logger.debug(f"👆 点击了 {label}")
+
+
+def try_relogin(label, check_func, click_region):
+    """
+    通用重连逻辑：
+    - 停止程序
+    - 点击对应按钮
+    - 检测登录界面
+    - 自动进入游戏
+    """
+    logger.warning(f"🔁 [{label}] 检测到异常，执行重连")
+    utils.stop_program()
+    time.sleep(utils.human_like_uniform(*SHORT_WAIT))
+    click_random_region(click_region, label=f"{label} 点击区域")
+
+    # 等待登录界面或进入游戏
+    while not config.stop_event.is_set():
+        if check_func():
+            logger.debug(f"[{label}] 异常仍存在，继续等待")
+            time.sleep(utils.human_like_uniform(0.05, 0.07))
+            continue
+
+        # 检测 Steam 登录界面
+        if utils.check_template_in_region(config.SteamLoginRegionScreenshot, "steamlogin.png"):
+            logger.info(f"[{label}] 检测到 Steam 登录界面，准备登录")
+            time.sleep(utils.human_like_uniform(*RELOGIN_WAIT))
+            click_random_region(config.SteamLoginRegionClick, "Steam 登录")
+            break
+
+        # 检测独立登录界面
+        if utils.check_template_in_region(config.StandaloneLoginRegionScreenshot, "standalonelogin.png"):
+            logger.info(f"[{label}] 检测到独立登录界面，准备登录")
+            time.sleep(utils.human_like_uniform(*RELOGIN_WAIT))
+            click_random_region(config.StandaloneLoginRegionClick, "独立登录")
+            break
+
+        # 检测是否回到游戏界面
+        if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or utils.get_current_position():
+            logger.info(f"[{label}] ✅ 已重新进入游戏界面")
+            time.sleep(utils.human_like_uniform(*RELOGIN_WAIT))
+            config.need_restart = True
+            return
+
+        time.sleep(utils.human_like_uniform(0.05, 0.07))
+
+
+# =========================
+# 👁️ 守护线程：监视异常并重启
+# =========================
 def monitor_and_restart():
-    while True:
-        time.sleep(random.uniform(1.04, 1.06))
-        #服务器失联
-        lossgameconnect = utils.check_template_in_region(config.LossGameConnectRegionScreenshot, template_path="lossgameconnect.png")
-        gift = utils.find_template_in_regions(config.GiftRegionScreenshot, template_filename="gift.png")
-        serverloss = utils.check_template_in_region(config.ServerLossRegionScreenshot, template_path="serverloss.png")
-        login_error_match = utils.check_template_in_region(config.LoginErrorRegionScreenshot, "loginerror.png")
-        
-        if login_error_match:
-            logger.info("检测到登陆错误，准备重新登录。")
-            utils.stop_program()
-            time.sleep(random.uniform(0.23, 0.235))
-            utils.move_mouse_random_in_region(region=config.ServerLossRegionClick)
-            time.sleep(random.uniform(2.23, 3.235))
-            utils.click_left_mouse()
-            # 等待出现重新登录界面
-            while not config.stop_event.is_set():
-                login_error_match = utils.check_template_in_region(config.LoginErrorRegionScreenshot, "loginerror.png")
-                steam_match = utils.check_template_in_region(config.SteamLoginRegionScreenshot, template_path="steamlogin.png")
-                standalone_match = utils.check_template_in_region(config.StandaloneLoginRegionScreenshot, template_path="standalonelogin.png")
-                if login_error_match:
-                    break
-                if steam_match:
-                    logger.info("检测到Steam登录界面，准备重新登录。")
-                    time.sleep(random.uniform(2.23, 3.235))
-                    utils.move_mouse_random_in_region(region=config.SteamLoginRegionClick)
-                    time.sleep(random.uniform(2.23, 3.235))
-                    utils.click_left_mouse()
-                    break
-                if standalone_match:
-                    logger.info("检测到独立登录界面，准备重新登录。")
-                    time.sleep(random.uniform(2.23, 3.235))
-                    utils.move_mouse_random_in_region(region=config.StandaloneLoginRegionClick)
-                    time.sleep(random.uniform(2.23, 3.235))
-                    utils.click_left_mouse()
-                    break
-                time.sleep(random.uniform(0.04, 0.06))
-            while not config.stop_event.is_set():    
-                login_error_match = utils.check_template_in_region(config.LoginErrorRegionScreenshot, "loginerror.png")
-                if login_error_match:
-                    break
-                # 是否在游戏界面
-                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or utils.get_current_position():
-                    logger.info("已在游戏界面。")
-                    time.sleep(random.uniform(2.23, 3.235))
-                    config.need_restart=True
-                    break    
-                time.sleep(random.uniform(0.04, 0.06))    
+    while not config.stop_event.is_set():
+        time.sleep(utils.human_like_uniform(*MONITOR_INTERVAL))
 
-        if serverloss:
-            logger.warning("🔁 检测到服务器未响应")
-            utils.stop_program()
-            time.sleep(random.uniform(0.23, 0.235))
-            utils.move_mouse_random_in_region(region=config.ServerLossRegionClick)
-            time.sleep(random.uniform(0.23, 0.235))
-            utils.click_left_mouse()
-            # 等待出现重新登录界面
-            while True:
-                serverloss = utils.check_template_in_region(config.ServerLossRegionScreenshot, template_path="serverloss.png")
-                steam_match = utils.check_template_in_region(config.SteamLoginRegionScreenshot, template_path="steamlogin.png")
-                standalone_match = utils.check_template_in_region(config.StandaloneLoginRegionScreenshot, template_path="standalonelogin.png")
-                if serverloss:
-                    break
-                if steam_match:
-                    logger.info("检测到Steam登录界面，准备重新登录。")
-                    time.sleep(random.uniform(0.23, 0.235))
-                    utils.move_mouse_random_in_region(region=config.SteamLoginRegionClick)
-                    time.sleep(random.uniform(0.23, 0.235))
-                    utils.click_left_mouse()
-                    break
-                if standalone_match:
-                    logger.info("检测到独立登录界面，准备重新登录。")
-                    time.sleep(random.uniform(0.23, 0.235))
-                    utils.move_mouse_random_in_region(region=config.StandaloneLoginRegionClick)
-                    time.sleep(random.uniform(0.23, 0.24))
-                    utils.click_left_mouse()
-                    break
-                time.sleep(random.uniform(0.04, 0.06))
-            while not config.stop_event.is_set():    
-                serverloss = utils.check_template_in_region(config.ServerLossRegionScreenshot, template_path="serverloss.png")
-                if serverloss:
-                    break
-                # 是否在游戏界面
-                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or utils.get_current_position():
-                    logger.info("已在游戏界面。")
-                    time.sleep(random.uniform(2.23, 3.235))
-                    config.need_restart=True
-                    break    
-                time.sleep(random.uniform(0.04, 0.06))    
+        # 检测各种状态
+        lossgameconnect = utils.check_template_in_region(config.LossGameConnectRegionScreenshot, "lossgameconnect.png")
+        serverloss = utils.check_template_in_region(config.ServerLossRegionScreenshot, "serverloss.png")
+        login_error = utils.check_template_in_region(config.LoginErrorRegionScreenshot, "loginerror.png")
+        gifts = utils.find_template_in_regions(config.GiftRegionScreenshot, "gift.png", confidence=0.8)
 
-        if lossgameconnect:
-            logger.warning("🔁 检测到服务器失联，立即重启")
-            utils.stop_program()
-            time.sleep(random.uniform(0.23, 0.235))
-            utils.move_mouse_random_in_region(region=config.LossGameConnectRegionClick)
-            time.sleep(random.uniform(0.23, 0.235))
-            utils.click_left_mouse()
-             # 等待出现重新登录界面
-            while not config.stop_event.is_set():
-                steam_match = utils.check_template_in_region(config.SteamLoginRegionScreenshot, template_path="steamlogin.png")
-                standalone_match = utils.check_template_in_region(config.StandaloneLoginRegionScreenshot, template_path="standalonelogin.png")
-                lossgameconnect = utils.check_template_in_region(config.LossGameConnectRegionScreenshot, template_path="lossgameconnect.png")
-                if lossgameconnect:
-                    break
-                if steam_match:
-                    logger.info("检测到Steam登录界面，准备重新登录。")
-                    time.sleep(random.uniform(2.23, 3.235))
-                    utils.move_mouse_random_in_region(region=config.SteamLoginRegionClick)
-                    time.sleep(random.uniform(2.23, 3.235))
-                    utils.click_left_mouse()
-                    break
-                if standalone_match:
-                    logger.info("检测到独立登录界面，准备重新登录。")
-                    time.sleep(random.uniform(2.23, 3.235))
-                    utils.move_mouse_random_in_region(region=config.StandaloneLoginRegionClick)
-                    time.sleep(random.uniform(2.23, 3.235))
-                    utils.click_left_mouse()
-                    break
-                time.sleep(random.uniform(0.04, 0.06))
-            while not config.stop_event.is_set():    
-                lossgameconnect = utils.check_template_in_region(config.LossGameConnectRegionScreenshot, template_path="lossgameconnect.png")
-                if lossgameconnect:
-                    break
-                # 是否在游戏界面
-                if utils.check_template_in_region(config.FishRegionScreenshot, "fish.png") or utils.get_current_position():
-                    logger.info("已在游戏界面。")
-                    time.sleep(random.uniform(2.23, 3.235))
-                    config.need_restart=True
-                    break    
-                time.sleep(random.uniform(0.04, 0.06))
+        # 登录错误处理
+        if login_error:
+            try_relogin("登录错误", 
+                        lambda: utils.check_template_in_region(config.LoginErrorRegionScreenshot, "loginerror.png"),
+                        config.ServerLossRegionClick)
 
-        if len(gift)>0:
-            time.sleep(random.uniform(0.43, 0.45))
+        # 服务器未响应
+        elif serverloss:
+            try_relogin("服务器未响应", 
+                        lambda: utils.check_template_in_region(config.ServerLossRegionScreenshot, "serverloss.png"),
+                        config.ServerLossRegionClick)
+
+        # 游戏失联
+        elif lossgameconnect:
+            try_relogin("服务器失联",
+                        lambda: utils.check_template_in_region(config.LossGameConnectRegionScreenshot, "lossgameconnect.png"),
+                        config.LossGameConnectRegionClick)
+
+        # 检测礼物
+        elif len(gifts) > 0:
+            time.sleep(utils.human_like_uniform(0.43, 0.45))
+            logger.info("🎁 检测到礼物，准备领取")
             utils.press_key('Space')
 
+        # 检测是否需要重启
         if config.need_restart:
             logger.warning("🔁 检测到 need_restart=True，立即重启")
             config.need_restart = False
@@ -151,31 +114,34 @@ def monitor_and_restart():
             utils.delayed_start()
 
 
-# ✅ 热键绑定（运行在后台线程中）
+# =========================
+# 🎹 热键监听线程
+# =========================
 def hotkey_listener():
-    keyboard.add_hotkey(config.START_HOTKEY, utils.delayed_start)
-    keyboard.add_hotkey(config.STOP_HOTKEY, utils.stop_program)
-    # keyboard.add_hotkey(config.EXIT_HOTKEY, lambda: os._exit(0))  # 立即退出整个进程
-    # logger.info("🎮 热键监听已启动（在后台线程中）")
-    time.sleep(0.5)
-    logger.info(f"🎮 按 {config.START_HOTKEY} 启动，{config.STOP_HOTKEY} 停止。")
-    keyboard.wait()  # 会阻塞线程，但不影响主线程的 GUI
+    try:
+        keyboard.add_hotkey(config.START_HOTKEY, utils.delayed_start)
+        keyboard.add_hotkey(config.STOP_HOTKEY, utils.stop_program)
+        logger.info(f"🎮 按 {config.START_HOTKEY} 启动，{config.STOP_HOTKEY} 停止。")
+        keyboard.wait()
+    except KeyboardInterrupt:
+        logger.info("🛑 热键监听中断，退出监听线程。")
 
 
+# =========================
+# 🚀 主程序入口
+# =========================
 def main():
-
+    # 启动守护线程
     utils.start_daemon_thread(monitor_and_restart)
-
     utils.start_daemon_thread(hotkey_listener)
 
-    # ✅ 主线程运行 GUI（Tkinter 要求）
+    # 启动 GUI
     logger.info("🚀 正在启动配置界面")
     launch_config_window()
-    
-    #清理按键
-    utils.cleanup_keys()
 
-    # ❌ 不再使用 keyboard.wait()，因为 GUI 窗口在主线程，关闭 GUI 即退出
+    # 退出前清理
+    config.stop_event.set()
+    utils.cleanup_keys()
     logger.info("👋 GUI 退出，程序结束")
 
 
