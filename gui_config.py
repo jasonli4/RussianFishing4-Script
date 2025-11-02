@@ -358,15 +358,69 @@ def load_window_geometry():
 def launch_config_window():
     load_config_from_file()
 
+    def apply_theme(root: tk.Tk, color: str):
+        """
+        应用主题色到整个 Tkinter 窗口，包括 ttk 控件。
+        :param root: Tk 主窗口对象
+        :param color: 主背景颜色（如 "#ECEFF1" 或 "#B81414"）
+        """
+        # 尝试使用一个支持背景修改的主题
+        style = ttk.Style()
+        try:
+            style.theme_use("clam")
+        except tk.TclError:
+            pass  # 如果没有 clam 主题，跳过
+
+        # 设置主窗口背景
+        root.configure(bg=color)
+
+        # 通用字体配置
+        base_font = ("Microsoft YaHei", 8)
+
+        # --- ttk 控件样式定义 ---
+        style.configure("TFrame", background=color)
+        style.configure("TLabel", background=color, foreground="#222", font=base_font)
+        style.configure("TCheckbutton", background=color, font=base_font)
+        style.configure("TButton", font=base_font, padding=3)
+        style.configure("Small.TButton", font=base_font, padding=2)
+        style.configure("TCombobox", font=base_font)
+        style.configure("TEntry", font=base_font)
+        style.configure("TLabelframe", background=color, font=("Microsoft YaHei", 8, "bold"), foreground="#007bff")
+        style.configure("TLabelframe.Label", background=color, font=("Microsoft YaHei", 8, "bold"), foreground="#007bff")
+
+        # Notebook 标签页样式
+        style.configure("TNotebook", background=color, borderwidth=0)
+        style.configure("TNotebook.Tab", background=color, padding=[10, 5], font=base_font)
+        style.map("TNotebook.Tab",
+                background=[("selected", "#FFFFFF"), ("active", "#F0F0F0")],
+                foreground=[("selected", "#000000"), ("active", "#000000")])
+
+        # --- tk.Frame 递归设置背景 ---
+        def set_bg_recursive(widget):
+            """递归更新所有 tk 控件的背景色"""
+            try:
+                widget.configure(bg=color)
+            except tk.TclError:
+                pass
+            for child in widget.winfo_children():
+                set_bg_recursive(child)
+
+        set_bg_recursive(root)
+
+        # 统一刷新
+        root.update_idletasks()
+
     root = tk.Tk()
-    root.title("钓鱼脚本v1.0.6")
-    root.configure(bg="#f0f0f0")  # 设置窗口背景色为浅灰
+    root.title("钓鱼脚本")
+    # root.configure(bg="#F7F7F7")  # 背景色生效区域：仅 root
+
+    apply_theme(root, "#ECEFF1") 
 
     geometry = load_window_geometry()
     if geometry:
         root.geometry(geometry)
     else:
-        root.geometry("610x895+663+52")  # 略微增加宽度以改善布局
+        root.geometry("610x895+663+52")
 
     def on_close():
         save_config_to_file()
@@ -375,19 +429,32 @@ def launch_config_window():
 
     root.protocol("WM_DELETE_WINDOW", on_close)
 
-    style = ttk.Style()
-    style.theme_use('vista')  # 使用 'clam' 主题，更现代美观
-    style.configure("Small.TButton", font=("Microsoft YaHei", 8), padding=2)
-    style.configure("TLabel", font=("Microsoft YaHei", 8), foreground="#333")
-    style.configure("TButton", font=("Microsoft YaHei", 8), padding=2)
-    style.configure("TCheckbutton", font=("Microsoft YaHei", 8))
-    style.configure("TEntry", font=("Microsoft YaHei", 8))
-    style.configure("TCombobox", font=("Microsoft YaHei", 8))
-    style.configure("TLabelframe", font=("Microsoft YaHei", 8, "bold"), foreground="#007bff")  # 蓝色标题
-    style.configure("TLabelframe.Label", font=("Microsoft YaHei", 8, "bold"), foreground="#007bff")
+    # # ========== 样式部分 ==========
+    # style = ttk.Style()
+    # style.theme_use("clam")  # ✅ vista 主题不支持自定义背景色，改成 clam
+    # style.configure("TFrame", background="#B81414")
+    # style.configure("TNotebook", background="#B81414")
+    # style.configure("TNotebook.Tab", background="#E04B4B", foreground="white")
+    # style.map("TNotebook.Tab", background=[("selected", "#B81414")])
 
-    # 使用 Notebook 来组织不同部分，提高美观性和可导航性
-    notebook = ttk.Notebook(root)
+    # style.configure("Small.TButton", font=("Microsoft YaHei", 8), padding=2)
+    # style.configure("TLabel", font=("Microsoft YaHei", 8), foreground="#333", background="#B81414")
+    # style.configure("TButton", font=("Microsoft YaHei", 8), padding=2)
+    # style.configure("TCheckbutton", font=("Microsoft YaHei", 8), background="#B81414")
+    # style.configure("TEntry", font=("Microsoft YaHei", 8))
+    # style.configure("TCombobox", font=("Microsoft YaHei", 8))
+    # style.configure("TLabelframe", font=("Microsoft YaHei", 8, "bold"), foreground="#007bff", background="#B81414")
+    # style.configure("TLabelframe.Label", font=("Microsoft YaHei", 8, "bold"), foreground="#007bff", background="#B81414")
+
+    root.rowconfigure(0, weight=1)
+    root.columnconfigure(0, weight=1)
+
+    # 主内容区改为 tk.Frame，让背景继承 root
+    main_frame = tk.Frame(root)
+    main_frame.grid(row=0, column=0, sticky="nsew")
+
+    # Notebook
+    notebook = ttk.Notebook(main_frame, style="TNotebook")
     notebook.pack(fill="both", expand=True, padx=10, pady=10)
 
     
@@ -3145,9 +3212,10 @@ def launch_config_window():
     show_startup_banner()
 
 
-    # === 状态栏：显示程序运行状态 ===
-    status_bar = ttk.Label(root, text="", relief="sunken", anchor="w", padding=5, font=("Microsoft YaHei", 9))
-    status_bar.pack(side="bottom", fill="x")
+    # ------------------------ 底部状态栏 ------------------------
+    status_bar = ttk.Label(root, text="🔲 程序已准备就绪",
+                         anchor="w", padding=5, font=("Microsoft YaHei", 9))
+    status_bar.grid(row=1, column=0, sticky="ew")  # 固定在底部，不会被压缩
 
     def update_status_label():
         if config.program_starting:
