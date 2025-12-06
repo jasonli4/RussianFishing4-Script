@@ -199,11 +199,8 @@ pyinstaller --clean main_gpu.spec
 目前仅支持简体中文，欢迎通过贡献代码支持多语言。
 
 ## 社区
-[![Discord](https://img.shields.io/badge/Join%20Discord-5865F2?logo=discord&logoColor=white)](https://discord.gg/sUTr9Z7dxW)
-
 由于倒卖，github停止更新，如有疑问联系本人
-
-QQ：976162467
+Q：976162467
 
 如果喜欢本项目，请点个Star⭐️支持！
 
