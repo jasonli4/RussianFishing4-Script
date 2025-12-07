@@ -200,6 +200,7 @@ pyinstaller --clean main_gpu.spec
 
 ## 社区
 由于倒卖，github停止更新，如有疑问联系本人
+
 Q：976162467
 
 如果喜欢本项目，请点个Star⭐️支持！
