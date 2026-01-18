@@ -241,7 +241,7 @@ def get_virtual_key(key):
 _send_lock = threading.Lock()
 
 def _send_input(inputs):
-    with _send_lock:
+    with _send_lock:  # 进入临界区前获取锁
         n_inputs = len(inputs)
         arr = (INPUT * n_inputs)(*inputs)
         sent = SendInput(n_inputs, arr, ctypes.sizeof(INPUT))
@@ -413,6 +413,20 @@ def mouse_wheel(delta):
 #     for _ in range(steps):
 #         mouse_wheel(delta)
 #         time.sleep(random.uniform(min_delay, max_delay))
+
+# 添加 human_like_uniform 函数 --- 20260101
+def human_like_uniform(min_val, max_val):
+    """生成更接近人类操作习惯的随机延迟"""
+    if min_val >= max_val:
+        return min_val
+    exp_factor = 3.0
+    random_val = random.random()
+    adjusted = 1 - math.exp(-exp_factor * random_val)
+    delay = min_val + (max_val - min_val) * adjusted
+    jitter = random.uniform(-0.01, 0.01)
+    return max(min_val, min(delay + jitter, max_val))
+
+# ... 其他已有函数（如 slow_scroll、move_mouse_random_in_region 等）...
 
 def slow_scroll(up=True, steps=3, fps=config.fps):
     """
