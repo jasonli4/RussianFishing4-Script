@@ -432,10 +432,12 @@ def slow_scroll(up=True, steps=3, fps=config.fps):
     """
     更强力的滚轮模拟，适配帧驱动游戏输入
     :param up: True=向上, False=向下
-    :param frames: 持续几帧
+    :param steps: 持续几步，默认3步 原注释笔误，实际是steps步数
     :param fps: 游戏帧率，用于推算 sleep
     """
+    # 1. 定义单步滚动量：Windows默认滚轮1个刻度=120，这里取12（1/10刻度），实现慢速
     delta = 12 if up else -12
+    # 2. 计算每步间隔时间：按游戏帧率推算，确保滚动与游戏帧更新同步
     frame_interval = 1 / fps
 
     for _ in range(steps):
